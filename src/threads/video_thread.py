@@ -6,6 +6,7 @@ class VideoThread(QThread):
 
     frame_catturato = Signal(QImage) # immagine catturata dalla webcam
     errore= Signal(str) # messaggio di errore
+    webcam_disconnessa = Signal() # segnale emesso quando la webcam è irraggiungibile
 
     def __init__(self, indice_camera=0, parent=None):
         super().__init__(parent)
@@ -18,7 +19,8 @@ class VideoThread(QThread):
             cap = cv2.VideoCapture(self.indice_camera)
             cap.set(cv2.CAP_PROP_FPS, 30)
             if not cap.isOpened(): # si controlla se la webcam si apre o no
-                self.errore.emit(f"Errore: la webcam non si apre (indice: {self.indice_camera})")
+                self.errore.emit("La webcam è irraggiungibile")
+                self.webcam_disconnessa.emit()
                 return
             errori_consecutivi = 0
             while self._is_running: # qui inizia il ciclo di acquisizione
@@ -26,25 +28,28 @@ class VideoThread(QThread):
                 if not ret or frame is None:
                     errori_consecutivi += 1
                     if errori_consecutivi > 30:
-                        self.errore.emit("Errore: webcam irraggiungibile")
-                        break # dopo più di 30 volte consecutive in cui non si riesce a leggere il frame, si esce dal ciclo while
-                    continue # si salta questa iterazione e si ricomincia con una nuova
+                        self.errore.emit("La webcam è irraggiungibile")
+                        self.webcam_disconnessa.emit()
+                        break
+                    self.msleep(100)
+                    continue
                 errori_consecutivi = 0
                 try:
                     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) # conversione del frame da bgr a rgb
                 except cv2.error as e:
-                    self.errore.emit(f"Errore: conversione colore:{e}")
+                    self.errore.emit(f"Conversione colore non andata a buon fine")
                     continue
             
                 h, w, ch = rgb_frame.shape
                 bytes_per_linea = ch * w
                 immagine_qt = QImage(rgb_frame.copy().data, w, h, bytes_per_linea, QImage.Format.Format_RGB888) # viene creato un oggetto QImage a partire dai dati dell'array NumPy
-                self.frame_catturato.emit(immagine_qt.copy())
+                self.frame_catturato.emit(immagine_qt)
 
                 del frame
                 del rgb_frame
+                self.msleep(33)
         except Exception as e:
-            self.errore.emit(f"Errore: problema nel VideoThread: {e}")
+            self.errore.emit(f"Problema nel VideoThread")
 
         finally:
             if cap is not None:
@@ -52,9 +57,5 @@ class VideoThread(QThread):
 
     def stop(self):
         self._is_running = False
+        self.quit()
         self.wait()
-
-
-
-
-        # Da risolvere problema che si verifica quando l'app è aperta ma si scollega la webcam
