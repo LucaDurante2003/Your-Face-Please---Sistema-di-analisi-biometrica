@@ -3,6 +3,7 @@ from PySide6.QtCore import Slot, Qt, QTimer
 from PySide6.QtGui import QImage, QPixmap, QIcon
 from PySide6.QtWidgets import (QMainWindow, QWidget, QLabel, QVBoxLayout, QHBoxLayout, QPushButton)
 from src.threads.video_thread import VideoThread
+from src.threads.worker_thread import WorkerThread
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -46,25 +47,44 @@ class MainWindow(QMainWindow):
         self.timer_riconnessione.setInterval(3000)
         self.timer_riconnessione.timeout.connect(self.tenta_riconnessione)
 
-        # Viene avviato il thread video
+        # QTimer per resettare la dashboard in caso non venga rilevato più nessun volto
+        self.timer_nessun_volto = QTimer(self)
+        self.timer_nessun_volto.setSingleShot(True)
+        self.timer_nessun_volto.setInterval(3000)
+        self.timer_nessun_volto.timeout.connect(self.reset_dashboard)
+
+        # Viene avviato il thread video e il thread worker
         self.avvia_video_thread()
+        self.avvia_worker_thread()
         
 
     def avvia_video_thread(self):
 
         if hasattr(self,'video_thread'):
             try:
-                self.video_thread.frame_catturato.disconnect(self.update_video)
+                self.video_thread.frame_per_video.disconnect(self.update_video)
+                self.video_thread.frame_per_analisi.disconnect()
                 self.video_thread.errore.disconnect(self.show_error)
                 self.video_thread.webcam_disconnessa.disconnect(self._webcam_disconnessa)
             except RuntimeError:
                 pass
         
         self.video_thread = VideoThread()
-        self.video_thread.frame_catturato.connect(self.update_video)
+        self.video_thread.frame_per_video.connect(self.update_video)
         self.video_thread.errore.connect(self.show_error)
         self.video_thread.webcam_disconnessa.connect(self._webcam_disconnessa)
+        if hasattr(self,'worker_thread'):
+            self.video_thread.frame_per_analisi.connect(self.worker_thread.aggiorna_frame)
         self.video_thread.start()
+
+    def avvia_worker_thread(self):
+        self.worker_thread = WorkerThread()
+        self.video_thread.frame_per_analisi.connect(self.worker_thread.aggiorna_frame)
+        self.worker_thread.risultati_analisi.connect(self.aggiorna_dashboard)
+        self.worker_thread.nessun_volto.connect(self.gestisci_nessun_volto)
+        self.worker_thread.errore.connect(self.show_error)
+        self.worker_thread.start()
+
 
     @Slot(QImage)
     def update_video(self, image: QImage): # slot per ricevere la nuova immagine e aggiornare il video
@@ -83,14 +103,36 @@ class MainWindow(QMainWindow):
     @Slot(str)
     def show_error(self, errore: str): # slot per ricevere l'errore e mostrarlo nella finestra
         self.statusBar().showMessage(errore)
-
+    
     @Slot()
     def _webcam_disconnessa(self): # slot per ricevere il segnale quando la webcam è irraggiungibile
         self.video_label.clear()
         self.video_label.setWordWrap(True)
         self.video_label.setText("Webcam disconnessa. \nRiconnessione in corso...")
+        self.info_label.setText("<b>Dati rilevati</b><br>In attesa di rilevazione...")
+        self.video_thread.imposta_regione_volto(None)
         if not self.timer_riconnessione.isActive():
             self.timer_riconnessione.start()
+
+    @Slot()
+    def gestisci_nessun_volto(self): # slot per ricevere il segnale quando non viene rilevato più nessun volto
+        if not self.timer_nessun_volto.isActive():
+            self.timer_nessun_volto.start()
+
+    def aggiorna_dashboard(self, dati):
+        self.timer_nessun_volto.stop()
+        testo = (
+            f"<b>Dati rilevati</b><br><br>"
+            f"<b>Età:</b> {dati['eta']} anni<br>"
+            f"<b>Genere:</b> {dati['genere']}<br>"
+            f"<b>Espressione:</b> {dati['emozione']}<br>"
+        )
+        self.info_label.setText(testo)
+        self.video_thread.imposta_regione_volto(dati.get("regione"))
+
+    def reset_dashboard(self):
+        self.info_label.setText("<b>Dati rilevati</b><br>In attesa di rilevazione...")
+        self.video_thread.imposta_regione_volto(None)
 
     def tenta_riconnessione(self):
         if self.video_thread.isRunning():
@@ -100,5 +142,7 @@ class MainWindow(QMainWindow):
 
     def closeEvent(self, event):
         self.timer_riconnessione.stop()
+        self.timer_nessun_volto.stop()
+        self.worker_thread.stop()
         self.video_thread.stop()
         super().closeEvent(event)
