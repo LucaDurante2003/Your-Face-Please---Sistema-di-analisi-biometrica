@@ -1,5 +1,5 @@
 from deepface import DeepFace
-import numpy as numpy
+import cv2
 
 GENERE_ITA = {
     "Man":"Uomo",
@@ -18,10 +18,16 @@ EMOZIONI_ITA = {
 
 def analizza_volto(frame):
     try:
+        altezza_originale, larghezza_originale = frame.shape[:2]
+        larghezza_downscaling = 320
+        scala = larghezza_originale / larghezza_downscaling
+        altezza_downscaling = int(altezza_originale / scala)
+        frame_downscaling = cv2.resize(frame, (larghezza_downscaling, altezza_downscaling))
+
         risultati = DeepFace.analyze(
-            img_path=frame,
+            img_path=frame_downscaling,
             actions=["age","gender","emotion"],
-            detector_backend="mtcnn",
+            detector_backend="retinaface",
             enforce_detection=False,
             silent=True
         )
@@ -38,8 +44,14 @@ def analizza_volto(frame):
 
         if confidenza < 0.5:
             return None
-        
-        regione = volto.get("region",{})
+
+        regione_downscaling = volto.get("region",{})
+        regione = {
+            "x": int(regione_downscaling.get("x", 0) * scala),
+            "y": int(regione_downscaling.get("y", 0) * scala),
+            "w": int(regione_downscaling.get("w", 0) * scala),
+            "h": int(regione_downscaling.get("h", 0) * scala),
+        }
         genere = volto.get("dominant_gender","")
         emozione = volto.get("dominant_emotion","")
         eta = int(volto.get("age",0))
@@ -50,8 +62,7 @@ def analizza_volto(frame):
             "emozione": EMOZIONI_ITA.get(emozione),
             "regione": regione
         }
-    except Exception as e:
-        print(f"[DEBUG] Errore: {e}")
+    except Exception:
         return None
     
     finally:

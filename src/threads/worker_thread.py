@@ -1,4 +1,3 @@
-import numpy as np
 from PySide6.QtCore import QThread, Signal, QMutex, QWaitCondition
 from src.engine.face_recognition import analizza_volto
 
