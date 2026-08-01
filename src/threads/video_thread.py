@@ -1,36 +1,62 @@
+"""
+Modulo per catturare il flusso video da mostrare nel riquadro sinistro dell'applicazione
+"""
+
 import cv2
 from PySide6.QtCore import QThread, Signal
 from PySide6.QtGui import QImage
 
 class VideoThread(QThread):
+    """
+    Classe che rappresenta un thread che lavora per catturare e mostrare il flusso video della webcam
+    """
 
-    frame_per_video = Signal(QImage) # immagine catturata dalla webcam
+    frame_per_video = Signal(QImage) 
     frame_per_analisi = Signal(object)
-    errore= Signal(str) # messaggio di errore
-    webcam_disconnessa = Signal() # segnale emesso quando la webcam è irraggiungibile
+    errore= Signal(str)
+    webcam_disconnessa = Signal()
 
     def __init__(self, indice_camera=0, parent=None):
+        """
+        Funzione per inizializzare l'oggetto VideoThread
+
+        Args:
+            indice_camera: int che indica quale webcam selezionare
+            parent: oggetto genitore
+        """
+
         super().__init__(parent)
-        self.indice_camera = indice_camera # seleziona la webcam predefinita del computer
-        self.is_running = True # controlla il while in run e, a differenza di while true, può essere controllato esternamente modificando questo parametro (funzione stop())
+        self.indice_camera = indice_camera
+        self.is_running = True
         self.contatore_frame = 0
         self.regione_volto = None
 
     def imposta_regione_volto(self, regione):
+        """
+        Funzione per impostare la regione del volto
+
+        Args:
+            regione: coordinate del volto rilevato
+        """
+
         self.regione_volto = regione
 
     def run(self):
-        cap = None # oggetto che gestisce la connessione fisica alla webcam e attraverso la quale si possono impostare gli fps oppure leggere i frame
+        """ 
+        Funzione che acquisisce i frame dalla webcam, li invia al worker thread per l'analisi e li mostra nel riquadro sinistro
+        """
+        
+        cap = None
         try:
             cap = cv2.VideoCapture(self.indice_camera)
             cap.set(cv2.CAP_PROP_FPS, 30)
-            if not cap.isOpened(): # si controlla se la webcam si apre o no
+            if not cap.isOpened():
                 self.errore.emit("La webcam è irraggiungibile")
                 self.webcam_disconnessa.emit()
                 return
             errori_consecutivi = 0
-            while self.is_running: # qui inizia il ciclo di acquisizione
-                ret, frame = cap.read() # ret è un booleano che indica se la lettura del frame è andata bene mentre frame è l'immagine sotto forma di array NumPy a 3 dimensioni
+            while self.is_running:
+                ret, frame = cap.read()
                 if not ret or frame is None:
                     errori_consecutivi += 1
                     if errori_consecutivi > 30:
@@ -55,16 +81,16 @@ class VideoThread(QThread):
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 
                 try:
-                    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) # conversione del frame da bgr a rgb
+                    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 except cv2.error:
                     self.errore.emit("Conversione colore non andata a buon fine")
                     continue
             
-                h_img, w_img, ch = rgb_frame.shape
-                bytes_per_linea = ch * w_img
-                immagine_qt = QImage(rgb_frame.copy().data, w_img, h_img, bytes_per_linea, QImage.Format.Format_RGB888) # viene creato un oggetto QImage a partire dai dati dell'array NumPy
+                h_img, w_img, ch_img = rgb_frame.shape
+                bytes_per_linea = ch_img * w_img
+                immagine_qt = QImage(rgb_frame.copy().data, w_img, h_img, bytes_per_linea, QImage.Format.Format_RGB888)
                 self.frame_per_video.emit(immagine_qt)
-
+                
                 del frame
                 del rgb_frame
                 self.msleep(33)
@@ -76,6 +102,10 @@ class VideoThread(QThread):
                 cap.release()
 
     def stop(self):
+        """
+        Funzione per fermare il thread
+        """
+        
         self.is_running = False
         self.quit()
         self.wait()

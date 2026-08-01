@@ -1,3 +1,7 @@
+"""
+Modulo per la finestra principale dell'applicazione
+"""
+
 import os
 from PySide6.QtCore import Slot, Qt, QTimer
 from PySide6.QtGui import QImage, QPixmap, QIcon
@@ -6,7 +10,15 @@ from src.threads.video_thread import VideoThread
 from src.threads.worker_thread import WorkerThread
 
 class MainWindow(QMainWindow):
+    """
+    Classe che rappresenta la finestra principale dell'applicazione
+    """
+
     def __init__(self):
+        """
+        Funzione per inizializzare l'oggetto MainWindow
+        """
+        
         super().__init__()
         self.setWindowTitle("Rilevatore biometrico")
         self.resize(1000, 600)
@@ -42,52 +54,61 @@ class MainWindow(QMainWindow):
         dashboard_dati.addWidget(self.btn_stop)
         layout.addLayout(dashboard_dati, stretch=1)
 
-        # QTimer per la riconnessione automatica della webcam
         self.timer_riconnessione = QTimer(self)
         self.timer_riconnessione.setInterval(3000)
         self.timer_riconnessione.timeout.connect(self.tenta_riconnessione)
 
-        # QTimer per resettare la dashboard in caso non venga rilevato più nessun volto
         self.timer_nessun_volto = QTimer(self)
         self.timer_nessun_volto.setSingleShot(True)
         self.timer_nessun_volto.setInterval(3000)
         self.timer_nessun_volto.timeout.connect(self.reset_dashboard)
 
-        # Viene avviato il thread video e il thread worker
         self.avvia_video_thread()
         self.avvia_worker_thread()
         
-
     def avvia_video_thread(self):
+        """
+        Funzione per avviare il video thread
+        """
 
         if hasattr(self,'video_thread'):
             try:
-                self.video_thread.frame_per_video.disconnect(self.update_video)
+                self.video_thread.frame_per_video.disconnect(self.aggiorna_video)
                 self.video_thread.frame_per_analisi.disconnect()
-                self.video_thread.errore.disconnect(self.show_error)
+                self.video_thread.errore.disconnect(self.mostra_errore)
                 self.video_thread.webcam_disconnessa.disconnect(self._webcam_disconnessa)
             except RuntimeError:
                 pass
         
         self.video_thread = VideoThread()
-        self.video_thread.frame_per_video.connect(self.update_video)
-        self.video_thread.errore.connect(self.show_error)
+        self.video_thread.frame_per_video.connect(self.aggiorna_video)
+        self.video_thread.errore.connect(self.mostra_errore)
         self.video_thread.webcam_disconnessa.connect(self._webcam_disconnessa)
         if hasattr(self,'worker_thread'):
             self.video_thread.frame_per_analisi.connect(self.worker_thread.aggiorna_frame)
         self.video_thread.start()
 
     def avvia_worker_thread(self):
+        """
+        Funzione per avviare il worker thread
+        """
+
         self.worker_thread = WorkerThread()
         self.video_thread.frame_per_analisi.connect(self.worker_thread.aggiorna_frame)
         self.worker_thread.risultati_analisi.connect(self.aggiorna_dashboard)
         self.worker_thread.nessun_volto.connect(self.gestisci_nessun_volto)
-        self.worker_thread.errore.connect(self.show_error)
+        self.worker_thread.errore.connect(self.mostra_errore)
         self.worker_thread.start()
 
 
     @Slot(QImage)
-    def update_video(self, image: QImage): # slot per ricevere la nuova immagine e aggiornare il video
+    def aggiorna_video(self, image):
+        """
+        Funzione che riceve la nuova immagine e aggiorna il video mostrato nella GUI
+
+        Args:
+            image: nuova immagine con cui aggiornare la precedente
+        """
 
         if self.timer_riconnessione.isActive():
             self.timer_riconnessione.stop()
@@ -101,11 +122,22 @@ class MainWindow(QMainWindow):
         self.video_label.setPixmap(scaled_pixmap)
 
     @Slot(str)
-    def show_error(self, errore: str): # slot per ricevere l'errore e mostrarlo nella finestra
+    def mostra_errore(self, errore):
+        """
+        Funzione che riceve l'errore e lo mostra nella GUI
+
+        Args:
+            errore: errore da mostrare
+        """
+
         self.statusBar().showMessage(errore)
     
     @Slot()
-    def _webcam_disconnessa(self): # slot per ricevere il segnale quando la webcam è irraggiungibile
+    def _webcam_disconnessa(self):
+        """
+        Funzione che riceve il segnale quando la webcam è irraggiungibile. Reimposta la dashboard dei dati
+        """
+
         self.video_label.clear()
         self.video_label.setWordWrap(True)
         self.video_label.setText("Webcam disconnessa. \nRiconnessione in corso...")
@@ -115,11 +147,22 @@ class MainWindow(QMainWindow):
             self.timer_riconnessione.start()
 
     @Slot()
-    def gestisci_nessun_volto(self): # slot per ricevere il segnale quando non viene rilevato più nessun volto
+    def gestisci_nessun_volto(self):
+        """
+        Funzione che riceve il segnale quando non viene più rilevato nessun volto. Gestisce il timer per il reset della dashboard dei dati
+        """
+
         if not self.timer_nessun_volto.isActive():
             self.timer_nessun_volto.start()
 
     def aggiorna_dashboard(self, dati):
+        """
+        Funzione che riceve i risultati dell'analisi del volto e li mostra nella dashboard
+
+        Args:
+            dati: risultati dell'analisi del volto
+        """
+
         self.timer_nessun_volto.stop()
         testo = (
             f"<b>Dati rilevati</b><br><br>"
@@ -131,16 +174,29 @@ class MainWindow(QMainWindow):
         self.video_thread.imposta_regione_volto(dati.get("regione"))
 
     def reset_dashboard(self):
+        """
+        Funzione che reimposta la dashboard dei dati ed elimina il riquadro che rileva la regione del volto dal video
+        """
+
         self.info_label.setText("<b>Dati rilevati</b><br>In attesa di rilevazione...")
         self.video_thread.imposta_regione_volto(None)
 
     def tenta_riconnessione(self):
+        """
+        Funzione che tenta di ristabilire la connessione con la webcam
+        """
+
         if self.video_thread.isRunning():
             self.video_thread.stop()
             return
         self.avvia_video_thread()
 
     def closeEvent(self, event):
+        """
+        Funzione che viene chiamata quando la finestra viene chiusa. Ferma tutti i thread
+        e chiude l'applicazione
+        """
+        
         self.timer_riconnessione.stop()
         self.timer_nessun_volto.stop()
         self.worker_thread.stop()

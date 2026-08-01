@@ -1,7 +1,11 @@
+"""
+Modulo per analizzare il frame passato dal worker thread ed effettuare il riconoscimento facciale
+"""
+
 from deepface import DeepFace
 import cv2
 
-GENERE_ITA = {
+GENERE_ITA = { 
     "Man":"Uomo",
     "Woman":"Donna",
 }
@@ -17,6 +21,16 @@ EMOZIONI_ITA = {
 }
 
 def analizza_volto(frame):
+    """
+    Funzione che riceve il frame passato dal worker thread e lo passa al modello di DeepFace, il quale lo analizza e fornisce i risultati
+
+    Args:
+        frame: frame passato dal worker thread
+    
+    Returns:
+        dict: dizionario con i risultati di interesse (età, genere, emozione, regione)
+    """
+
     try:
         altezza_originale, larghezza_originale = frame.shape[:2]
         larghezza_downscaling = 320
