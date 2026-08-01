@@ -1,5 +1,5 @@
 """
-    Modulo per catturare un frame ogni 5 frame mandati dal VideoThread e analizzarlo
+Modulo per catturare un frame ogni 5 frame mandati dal VideoThread e analizzarlo
 """
 
 from PySide6.QtCore import QThread, Signal, QMutex, QWaitCondition
