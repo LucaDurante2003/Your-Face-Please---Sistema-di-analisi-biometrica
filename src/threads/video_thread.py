@@ -1,5 +1,5 @@
 """
-Modulo per catturare il flusso video da mostrare nel riquadro sinistro dell'applicazione
+    Modulo per catturare il flusso video da mostrare nel riquadro sinistro dell'applicazione
 """
 
 import cv2
@@ -8,7 +8,7 @@ from PySide6.QtGui import QImage
 
 class VideoThread(QThread):
     """
-    Classe che rappresenta un thread che lavora per catturare e mostrare il flusso video della webcam
+        Classe che rappresenta un thread che lavora per catturare e mostrare il flusso video della webcam
     """
 
     frame_per_video = Signal(QImage) 
@@ -18,11 +18,11 @@ class VideoThread(QThread):
 
     def __init__(self, indice_camera=0, parent=None):
         """
-        Funzione per inizializzare l'oggetto VideoThread
+            Funzione per inizializzare l'oggetto VideoThread
 
-        Args:
-            indice_camera: int che indica quale webcam selezionare
-            parent: oggetto genitore
+            Args:
+                indice_camera: int che indica quale webcam selezionare
+                parent: oggetto genitore
         """
 
         super().__init__(parent)
@@ -33,17 +33,17 @@ class VideoThread(QThread):
 
     def imposta_regione_volto(self, regione):
         """
-        Funzione per impostare la regione del volto
+            Funzione per impostare la regione del volto
 
-        Args:
-            regione: coordinate del volto rilevato
+            Args:
+                regione: coordinate del volto rilevato
         """
 
         self.regione_volto = regione
 
     def run(self):
         """ 
-        Funzione che acquisisce i frame dalla webcam, li invia al worker thread per l'analisi e li mostra nel riquadro sinistro
+            Funzione che acquisisce i frame dalla webcam, li invia al worker thread per l'analisi e li mostra nel riquadro sinistro
         """
         
         cap = None
@@ -103,7 +103,7 @@ class VideoThread(QThread):
 
     def stop(self):
         """
-        Funzione per fermare il thread
+            Funzione per fermare il thread
         """
         
         self.is_running = False

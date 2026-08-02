@@ -1,5 +1,5 @@
 """
-Modulo che funge da entrypoint per l'applicazione
+    Modulo che funge da entrypoint per l'applicazione
 """
 
 from PySide6.QtWidgets import QApplication

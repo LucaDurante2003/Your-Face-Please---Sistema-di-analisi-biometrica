@@ -1,5 +1,5 @@
 """
-Modulo per la finestra principale dell'applicazione
+    Modulo per la finestra principale dell'applicazione
 """
 
 import os
@@ -11,12 +11,12 @@ from src.threads.worker_thread import WorkerThread
 
 class MainWindow(QMainWindow):
     """
-    Classe che rappresenta la finestra principale dell'applicazione
+        Classe che rappresenta la finestra principale dell'applicazione
     """
 
     def __init__(self):
         """
-        Funzione per inizializzare l'oggetto MainWindow
+            Funzione per inizializzare l'oggetto MainWindow
         """
         
         super().__init__()
@@ -68,7 +68,7 @@ class MainWindow(QMainWindow):
         
     def avvia_video_thread(self):
         """
-        Funzione per avviare il video thread
+            Funzione per avviare il video thread
         """
 
         if hasattr(self,'video_thread'):
@@ -90,7 +90,7 @@ class MainWindow(QMainWindow):
 
     def avvia_worker_thread(self):
         """
-        Funzione per avviare il worker thread
+            Funzione per avviare il worker thread
         """
 
         self.worker_thread = WorkerThread()
@@ -104,10 +104,10 @@ class MainWindow(QMainWindow):
     @Slot(QImage)
     def aggiorna_video(self, image):
         """
-        Funzione che riceve la nuova immagine e aggiorna il video mostrato nella GUI
+            Funzione che riceve la nuova immagine e aggiorna il video mostrato nella GUI
 
-        Args:
-            image: nuova immagine con cui aggiornare la precedente
+            Args:
+                image: nuova immagine con cui aggiornare la precedente
         """
 
         if self.timer_riconnessione.isActive():
@@ -124,10 +124,10 @@ class MainWindow(QMainWindow):
     @Slot(str)
     def mostra_errore(self, errore):
         """
-        Funzione che riceve l'errore e lo mostra nella GUI
+            Funzione che riceve l'errore e lo mostra nella GUI
 
-        Args:
-            errore: errore da mostrare
+            Args:
+                errore: errore da mostrare
         """
 
         self.statusBar().showMessage(errore)
@@ -135,7 +135,7 @@ class MainWindow(QMainWindow):
     @Slot()
     def _webcam_disconnessa(self):
         """
-        Funzione che riceve il segnale quando la webcam è irraggiungibile. Reimposta la dashboard dei dati
+            Funzione che riceve il segnale quando la webcam è irraggiungibile. Reimposta la dashboard dei dati
         """
 
         self.video_label.clear()
@@ -149,7 +149,7 @@ class MainWindow(QMainWindow):
     @Slot()
     def gestisci_nessun_volto(self):
         """
-        Funzione che riceve il segnale quando non viene più rilevato nessun volto. Gestisce il timer per il reset della dashboard dei dati
+            Funzione che riceve il segnale quando non viene più rilevato nessun volto. Gestisce il timer per il reset della dashboard dei dati
         """
 
         if not self.timer_nessun_volto.isActive():
@@ -157,10 +157,10 @@ class MainWindow(QMainWindow):
 
     def aggiorna_dashboard(self, dati):
         """
-        Funzione che riceve i risultati dell'analisi del volto e li mostra nella dashboard
+            Funzione che riceve i risultati dell'analisi del volto e li mostra nella dashboard
 
-        Args:
-            dati: risultati dell'analisi del volto
+            Args:
+                dati: risultati dell'analisi del volto
         """
 
         self.timer_nessun_volto.stop()
@@ -175,7 +175,7 @@ class MainWindow(QMainWindow):
 
     def reset_dashboard(self):
         """
-        Funzione che reimposta la dashboard dei dati ed elimina il riquadro che rileva la regione del volto dal video
+            Funzione che reimposta la dashboard dei dati ed elimina il riquadro che rileva la regione del volto dal video
         """
 
         self.info_label.setText("<b>Dati rilevati</b><br>In attesa di rilevazione...")
@@ -183,7 +183,7 @@ class MainWindow(QMainWindow):
 
     def tenta_riconnessione(self):
         """
-        Funzione che tenta di ristabilire la connessione con la webcam
+            Funzione che tenta di ristabilire la connessione con la webcam
         """
 
         if self.video_thread.isRunning():
@@ -193,8 +193,8 @@ class MainWindow(QMainWindow):
 
     def closeEvent(self, event):
         """
-        Funzione che viene chiamata quando la finestra viene chiusa. Ferma tutti i thread
-        e chiude l'applicazione
+            Funzione che viene chiamata quando la finestra viene chiusa. Ferma tutti i thread
+            e chiude l'applicazione
         """
         
         self.timer_riconnessione.stop()
