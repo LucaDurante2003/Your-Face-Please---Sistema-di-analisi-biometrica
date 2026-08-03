@@ -59,7 +59,7 @@ def analizza_volto(frame):
         x1, y1, x2, y2 = regione_downscaling
         ritaglio_volto = frame_downscaling[y1:y2, x1:x2]
 
-        if ritaglio_volto == 0:
+        if ritaglio_volto.size == 0:
             return None
 
         regione = {
