@@ -241,7 +241,69 @@ def estrai_roi_pelle(frame, landmark):
     return np.vstack(roi_list)
 
 def colore_dominante_hsv(roi_bgr, n_clusters=3):
-    "Da implementare"
+    """
+        Funzione che applica l'algoritmo K-Means sulla ROI convertita in HSV per trovare il colore dominante, cioè il centroide del cluster più numeroso
+
+        Args:
+            roi_bgr: ROI in formato BGR
+            n_clusters: numero di cluster per K-Means
+        
+        Returns:
+            h, s, v: tupla con valori del colore dominante, oppure None
+    """
+    
+    if roi_bgr is None or roi_bgr.size == 0:
+        return None
+    
+    roi_hsv = cv2.cvtColor(roi_bgr, cv2.COLOR_BGR2HSV)
+    matrice = roi_hsv.reshape(-1, 3).astype(np.float32)
+
+    if len(matrice) < n_clusters:
+        return None
+    
+    kmeans = KMeans(n_clusters=n_clusters, n_init=5, max_iter=100, random_state=42)
+    kmeans.fit(matrice)
+
+    etichette, conteggi = np.unique(kmeans.labels_, return_counts=True)
+    indice_dominante = etichette[np.argmax(conteggi)]
+    centroide = kmeans.cluster_centers_[indice_dominante]
+
+    h, s, v = int(centroide[0]), int(centroide[1]), int(centroide[2])
+
+    return h, s, v
 
 def analizza_colori(frame, landmark, regione):
-    "Da implementare"
+    """
+        Funzione che trova il colore dominante per ogni zona d'interesse
+
+        Args:
+            frame: immagine BGR a risoluzione originale
+            landmark: dict dei landmark facciali
+            regione: riquadro che identifica il volto
+        
+        Returns:
+            risultato: dict con i colori dominanti rilevati
+    """
+    
+    risultati = {
+        "colore_occhi": "Non rilevato",
+        "colore_capelli": "Non rilevato",
+        "colore_pelle": "Non rilevato",
+    }
+
+    roi_occhi = estrai_roi_occhi(frame, landmark)
+    hsv_occhi = colore_dominante_hsv(roi_occhi)
+    if hsv_occhi is not None:
+        risultati["colore_occhi"] = classifica_colore_occhi(hsv_occhi[0], hsv_occhi[1], hsv_occhi[2])
+    
+    roi_capelli = estrai_roi_capelli(frame, landmark, regione)
+    hsv_capelli = colore_dominante_hsv(roi_capelli)
+    if hsv_capelli is not None:
+        risultati["colore_capelli"] = classifica_colore_capelli(hsv_capelli[0], hsv_capelli[1], hsv_capelli[2])
+    
+    roi_pelle = estrai_roi_pelle(frame, landmark)
+    hsv_pelle = colore_dominante_hsv(roi_pelle)
+    if hsv_pelle is not None:
+        risultati["colore_pelle"] = classifica_colore_pelle(hsv_pelle[0], hsv_pelle[1], hsv_pelle[2])
+    
+    return risultati

@@ -4,6 +4,7 @@
 
 from PySide6.QtCore import QThread, Signal, QMutex, QWaitCondition
 from src.engine.face_recognition import analizza_volto
+from src.engine.color_recognition import analizza_colori
 
 class WorkerThread(QThread):
     """
@@ -60,6 +61,11 @@ class WorkerThread(QThread):
             try:
                 risultato = analizza_volto(frame)
                 if risultato is not None:
+                    landmark = risultato.get("landmarks")
+                    regione = risultato.get("regione")
+                    if landmark and regione:
+                        colori = analizza_colori(frame, landmark, regione)
+                        risultato.update(colori)
                     self.risultati_analisi.emit(risultato)
                 else:
                     self.nessun_volto.emit()

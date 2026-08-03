@@ -169,6 +169,10 @@ class MainWindow(QMainWindow):
             f"<b>Età:</b> {dati['eta']} anni<br>"
             f"<b>Genere:</b> {dati['genere']}<br>"
             f"<b>Espressione:</b> {dati['emozione']}<br>"
+            f"<b>Colore occhi:</b> {dati['colore_occhi']}<br>"
+            f"<b>Colore capelli:</b> {dati['colore_capelli']}<br>"
+            f"<b>Colore pelle:</b> {dati['colore_pelle']}<br>"
+
         )
         self.info_label.setText(testo)
         self.video_thread.imposta_regione_volto(dati.get("regione"))
