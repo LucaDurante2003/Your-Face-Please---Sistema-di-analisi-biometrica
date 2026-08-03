@@ -57,6 +57,10 @@ def analizza_volto(frame):
             return None
 
         x1, y1, x2, y2 = regione_downscaling
+        ritaglio_volto = frame_downscaling[y1:y2, x1:x2]
+
+        if ritaglio_volto == 0:
+            return None
 
         regione = {
             "x": int(x1 * scala),
@@ -76,7 +80,7 @@ def analizza_volto(frame):
             ]
         
         risultati = DeepFace.analyze(
-            img_path=frame_downscaling,
+            img_path=ritaglio_volto,
             actions=["age","gender","emotion"],
             detector_backend="skip",
             enforce_detection=False,
