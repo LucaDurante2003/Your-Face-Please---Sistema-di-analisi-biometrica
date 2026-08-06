@@ -167,12 +167,15 @@ def estrai_roi_occhi(frame, landmark):
         c_x, c_y = int(punto[0]), int(punto[1])
         roi = ritaglio_roi(frame, c_x, c_y, 15, 10)
         if roi is not None:
-            roi_list.append(roi)
+            roi_list.append(roi.reshape(-1, 3))
     
     if not roi_list:
         return None
     
-    return np.vstack(roi_list)
+    pixel_combinati = np.vstack(roi_list)
+    if len(pixel_combinati) > 0:
+        return pixel_combinati.reshape(-1, 1, 3)
+    return None
 
 def estrai_roi_capelli(frame, landmark, regione):
     """
@@ -233,12 +236,15 @@ def estrai_roi_pelle(frame, landmark):
     roi_list = []
     for roi in (roi_sx, roi_dx):
         if roi is not None:
-            roi_list.append(roi)
+            roi_list.append(roi.reshape(-1, 3))
     
     if not roi_list:
         return None
     
-    return np.vstack(roi_list)
+    pixel_combinati = np.vstack(roi_list)
+    if len(pixel_combinati) > 0:
+        return pixel_combinati.reshape(-1, 1, 3)
+    return None
 
 def colore_dominante_hsv(roi_bgr, n_clusters=3):
     """
@@ -261,12 +267,12 @@ def colore_dominante_hsv(roi_bgr, n_clusters=3):
     if len(matrice) < n_clusters:
         return None
     
-    kmeans = KMeans(n_clusters=n_clusters, n_init=5, max_iter=100, random_state=42)
-    kmeans.fit(matrice)
-
-    etichette, conteggi = np.unique(kmeans.labels_, return_counts=True)
-    indice_dominante = etichette[np.argmax(conteggi)]
-    centroide = kmeans.cluster_centers_[indice_dominante]
+    criteri = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.2)
+    _, etichette, centri = cv2.kmeans(matrice, n_clusters, None, criteri, 5, cv2.KMEANS_PP_CENTERS)
+    etichette_flat = etichette.flatten()
+    valori_unici, conteggi = np.unique(etichette_flat, return_counts=True)
+    indice_dominante = valori_unici[np.argmax(conteggi)]
+    centroide = centri[indice_dominante]
 
     h, s, v = int(centroide[0]), int(centroide[1]), int(centroide[2])
 

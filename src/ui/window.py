@@ -6,8 +6,7 @@ import os
 from PySide6.QtCore import Slot, Qt, QTimer
 from PySide6.QtGui import QImage, QPixmap, QIcon
 from PySide6.QtWidgets import (QMainWindow, QWidget, QLabel, QVBoxLayout, QHBoxLayout, QPushButton)
-from src.threads.video_thread import VideoThread
-from src.threads.worker_thread import WorkerThread
+from src.threads import VideoThread, WorkerThread
 
 class MainWindow(QMainWindow):
     """
@@ -79,12 +78,13 @@ class MainWindow(QMainWindow):
                 self.video_thread.webcam_disconnessa.disconnect(self._webcam_disconnessa)
             except RuntimeError:
                 pass
+            self.video_thread.stop()
         
         self.video_thread = VideoThread()
         self.video_thread.frame_per_video.connect(self.aggiorna_video)
         self.video_thread.errore.connect(self.mostra_errore)
         self.video_thread.webcam_disconnessa.connect(self._webcam_disconnessa)
-        if hasattr(self,'worker_thread'):
+        if hasattr(self, 'worker_thread'):
             self.video_thread.frame_per_analisi.connect(self.worker_thread.aggiorna_frame)
         self.video_thread.start()
 
@@ -169,10 +169,9 @@ class MainWindow(QMainWindow):
             f"<b>Età:</b> {dati['eta']} anni<br>"
             f"<b>Genere:</b> {dati['genere']}<br>"
             f"<b>Espressione:</b> {dati['emozione']}<br>"
-            f"<b>Colore occhi:</b> {dati['colore_occhi']}<br>"
-            f"<b>Colore capelli:</b> {dati['colore_capelli']}<br>"
-            f"<b>Colore pelle:</b> {dati['colore_pelle']}<br>"
-
+            f"<b>Colore occhi:</b> {dati.get('colore_occhi','Non rilevato')}<br>"
+            f"<b>Colore capelli:</b> {dati.get('colore_capelli','Non rilevato')}<br>"
+            f"<b>Colore pelle:</b> {dati.get('colore_pelle','Non rilevato')}<br>"
         )
         self.info_label.setText(testo)
         self.video_thread.imposta_regione_volto(dati.get("regione"))

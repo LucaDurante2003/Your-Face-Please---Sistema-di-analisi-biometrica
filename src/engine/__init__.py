@@ -1,0 +1,2 @@
+from .face_recognition import analizza_volto
+from .color_recognition import analizza_colori

@@ -3,8 +3,10 @@
 """
 
 from PySide6.QtCore import QThread, Signal, QMutex, QWaitCondition
-from src.engine.face_recognition import analizza_volto
-from src.engine.color_recognition import analizza_colori
+from src.engine import analizza_volto, analizza_colori
+import logging
+
+logger = logging.getLogger(__name__)
 
 class WorkerThread(QThread):
     """
@@ -69,7 +71,8 @@ class WorkerThread(QThread):
                     self.risultati_analisi.emit(risultato)
                 else:
                     self.nessun_volto.emit()
-            except Exception:
+            except Exception as e:
+                logger.error("Errore nell'analisi del WorkerThread: %s", e, exc_info=True)
                 self.errore.emit("Errore nell'analisi")
             finally:
                 del frame

@@ -5,6 +5,9 @@
 import cv2
 from PySide6.QtCore import QThread, Signal
 from PySide6.QtGui import QImage
+import logging
+
+logger = logging.getLogger(__name__)
 
 class VideoThread(QThread):
     """
@@ -30,6 +33,7 @@ class VideoThread(QThread):
         self.is_running = True
         self.contatore_frame = 0
         self.regione_volto = None
+        self.mutex_regione = QMutex()
 
     def imposta_regione_volto(self, regione):
         """
@@ -39,7 +43,9 @@ class VideoThread(QThread):
                 regione: coordinate del volto rilevato
         """
 
+        self.mutex_regione.lock()
         self.regione_volto = regione
+        self.mutex_regione.unlock()
 
     def run(self):
         """ 
@@ -70,9 +76,11 @@ class VideoThread(QThread):
                 self.contatore_frame += 1
                 if self.contatore_frame >= 5:
                     self.contatore_frame = 0
-                    self.frame_per_analisi.emit(frame.copy())
+                    self.frame_per_analisi.emit(frame)
 
+                self.mutex_regione.lock()
                 regione = self.regione_volto
+                self.mutex_regione.unlock()
                 if regione is not None:
                     x = regione["x"]
                     y = regione["y"]
@@ -82,19 +90,22 @@ class VideoThread(QThread):
                 
                 try:
                     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                except cv2.error:
+                except cv2.error as e:
+                    logger.error("Errore nella conversione del colore: %s", e, exc_info=True)
                     self.errore.emit("Conversione colore non andata a buon fine")
                     continue
             
                 h_img, w_img, ch_img = rgb_frame.shape
                 bytes_per_linea = ch_img * w_img
-                immagine_qt = QImage(rgb_frame.copy().data, w_img, h_img, bytes_per_linea, QImage.Format.Format_RGB888)
+                dati = rgb_frame.tobytes()
+                immagine_qt = QImage(dati, w_img, h_img, bytes_per_linea, QImage.Format.Format_RGB888).copy()
                 self.frame_per_video.emit(immagine_qt)
                 
                 del frame
                 del rgb_frame
                 self.msleep(33)
-        except Exception:
+        except Exception as e:
+            logger.error("Errore nel VideoThread: %s", e, exc_info=True)
             self.errore.emit("Problema nel VideoThread")
 
         finally:

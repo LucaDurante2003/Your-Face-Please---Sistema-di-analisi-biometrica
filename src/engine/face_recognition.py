@@ -5,6 +5,9 @@
 from deepface import DeepFace
 from retinaface import RetinaFace
 import cv2
+import logging
+
+logger = logging.getLogger(__name__)
 
 GENERE_ITA = { 
     "Man":"Uomo",
@@ -21,7 +24,7 @@ EMOZIONI_ITA = {
     "neutral": "Neutro",
 }
 
-def analizza_volto(frame):
+def analizza_volto(frame, larghezza_downscaling=320):
     """
         Funzione che riceve il frame passato dal worker thread e lo passa al modello di DeepFace, il quale lo analizza e fornisce i risultati
 
@@ -34,10 +37,13 @@ def analizza_volto(frame):
 
     try:
         altezza_originale, larghezza_originale = frame.shape[:2]
-        larghezza_downscaling = 320
-        scala = larghezza_originale / larghezza_downscaling
-        altezza_downscaling = int(altezza_originale / scala)
-        frame_downscaling = cv2.resize(frame, (larghezza_downscaling, altezza_downscaling))
+        if larghezza_originale <= larghezza_downscaling:
+            frame_downscaling = frame
+            scala = 1.0
+        else:
+            scala = larghezza_originale / larghezza_downscaling
+            altezza_downscaling = int(altezza_originale / scala)
+            frame_downscaling = cv2.resize(frame, (larghezza_downscaling, altezza_downscaling))
 
         volti = RetinaFace.detect_faces(frame_downscaling)
 
@@ -57,6 +63,8 @@ def analizza_volto(frame):
             return None
 
         x1, y1, x2, y2 = regione_downscaling
+        x1 = max(0, x1)
+        y1 = max(0, y1)
         ritaglio_volto = frame_downscaling[y1:y2, x1:x2]
 
         if ritaglio_volto.size == 0:
@@ -101,13 +109,11 @@ def analizza_volto(frame):
 
         return {
             "eta": eta,
-            "genere": GENERE_ITA.get(genere),
-            "emozione": EMOZIONI_ITA.get(emozione),
+            "genere": GENERE_ITA.get(genere, "Non rilevato"),
+            "emozione": EMOZIONI_ITA.get(emozione, "Non rilevata"),
             "regione": regione,
             "landmarks": landmarks
         }
-    except Exception:
+    except Exception as e:
+        logger.error("Errore nell'analisi del volto: %s", e, exc_info=True)
         return None
-    
-    finally:
-        del frame
