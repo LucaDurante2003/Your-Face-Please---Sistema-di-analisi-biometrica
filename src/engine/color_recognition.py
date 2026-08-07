@@ -194,7 +194,7 @@ def estrai_roi_capelli(frame, landmark, regione):
     x = regione["x"]
     y = regione["y"]
     w = regione["w"]
-    altezza_roi = int(regione["h"] * 0.3)
+    altezza_roi = int(regione["h"] * 0.2)
 
     y1 = max(0, y - altezza_roi)
     y2 = max(0, y)

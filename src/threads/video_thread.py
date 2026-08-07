@@ -3,7 +3,7 @@
 """
 
 import cv2
-from PySide6.QtCore import QThread, Signal
+from PySide6.QtCore import QThread, Signal, QMutex
 from PySide6.QtGui import QImage
 import logging
 
