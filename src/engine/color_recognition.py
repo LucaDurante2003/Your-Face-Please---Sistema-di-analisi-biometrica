@@ -194,17 +194,32 @@ def estrai_roi_capelli(frame, landmark, regione):
     x = regione["x"]
     y = regione["y"]
     w = regione["w"]
-    altezza_roi = int(regione["h"] * 0.2)
+    altezza_roi = int(regione["h"] * 0.35)
+
+    margine_laterale = int(w * 0.1)
 
     y1 = max(0, y - altezza_roi)
     y2 = max(0, y)
-    x1 = max(0, x)
-    x2 = min(larghezza_frame, x + w)
+    x1 = max(0, x - margine_laterale)
+    x2 = min(larghezza_frame, x + w + margine_laterale)
 
     if (x2 - x1) < 10 or (y2 - y1) < 10:
         return None
     
-    return frame[y1:y2, x1:x2]
+    roi_bgr = frame[y1:y2, x1:x2]
+    roi_hsv = cv2.cvtColor(roi_bgr, cv2.COLOR_BGR2HSV)
+
+    maschera_pelle = cv2.inRange(roi_hsv, np.array([0, 30, 80]), np.array([25, 170, 255]))
+    maschera_blu = cv2.inRange(roi_hsv, np.array([90, 50, 50]), np.array([140, 255, 255]))
+    maschera_verde = cv2.inRange(roi_hsv, np.array([35, 50, 50]), np.array([85, 255, 255]))
+    maschera_escludi = maschera_pelle | maschera_blu | maschera_verde
+    maschera_capelli = cv2.bitwise_not(maschera_escludi)
+    pixel_capelli = roi_bgr[maschera_capelli > 0]
+    
+    if len(pixel_capelli) < 20:
+        return None
+    
+    return pixel_capelli.reshape(-1, 1, 3)
 
 def estrai_roi_pelle(frame, landmark):
     """

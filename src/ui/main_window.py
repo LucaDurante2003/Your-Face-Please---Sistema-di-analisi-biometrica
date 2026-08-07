@@ -5,8 +5,10 @@
 import os
 from PySide6.QtCore import Slot, Qt, QTimer
 from PySide6.QtGui import QImage, QPixmap, QIcon
-from PySide6.QtWidgets import (QMainWindow, QWidget, QLabel, QVBoxLayout, QHBoxLayout, QPushButton)
+from PySide6.QtWidgets import (QMainWindow, QWidget, QLabel, QVBoxLayout, QHBoxLayout, QPushButton, QGridLayout, QFrame)
 from src.threads import VideoThread, WorkerThread
+
+VALORE_DEFAULT = "-"
 
 class MainWindow(QMainWindow):
     """
@@ -19,39 +21,92 @@ class MainWindow(QMainWindow):
         """
         
         super().__init__()
-        self.setWindowTitle("Rilevatore biometrico")
-        self.resize(1000, 600)
+        self.setWindowTitle("Your Face, Please - Analisi")
+        self.resize(1100, 650)
 
         base = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-        path = os.path.join(base,"img","window.ico")
+        path_icona = os.path.join(base,"img","window.ico")
 
-        if os.path.exists(path):
-            self.setWindowIcon(QIcon(path))
+        if os.path.exists(path_icona):
+            self.setWindowIcon(QIcon(path_icona))
 
-        # Layout
+        path_qss = os.path.join(os.path.dirname(__file__), "styles", "main_window.qss")
+        with open(path_qss, "r", encoding="utf-8") as f:
+            self.setStyleSheet(f.read())
+
         main_widget = QWidget()
         self.setCentralWidget(main_widget)
-        layout = QHBoxLayout(main_widget)
+        layout_principale = QVBoxLayout(main_widget)
+        layout_principale.setContentsMargins(0, 0, 0, 0)
+        layout_principale.setSpacing(0)
 
-        # Parte sinistra (video)
+        header = QWidget()
+        header.setObjectName("header")
+        header_layout = QVBoxLayout(header)
+        header_layout.setContentsMargins(15, 10, 15, 10)
+        header_layout.setSpacing(2)
+        titolo = QLabel("YOUR FACE, PLEASE")
+        titolo.setObjectName("header_titolo")
+        header_layout.addWidget(titolo)
+        sottotitolo = QLabel("DOCUMENTO DI RICONOSCIMENTO BIOMETRICO")
+        sottotitolo.setObjectName("header_sottotitolo")
+        header_layout.addWidget(sottotitolo)
+        layout_principale.addWidget(header)
+
+        corpo = QHBoxLayout()
+        corpo.setContentsMargins(15, 15, 15, 15)
+        corpo.setSpacing(15)
+
         self.video_label = QLabel()
+        self.video_label.setObjectName("video_label")
         self.video_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.video_label.setMinimumSize(640, 480)
-        self.video_label.setStyleSheet("background-color: #1e1e1e; color: white; border: 1px solid #d12626;")
-        layout.addWidget(self.video_label, stretch=2)
+        corpo.addWidget(self.video_label, stretch=2)
 
-        # Parte destra (dati)
-        dashboard_dati = QVBoxLayout()
-        self.info_label = QLabel("<b>Dati rilevati</b><br>In attesa di rilevazione...")
-        self.info_label.setAlignment(Qt.AlignmentFlag.AlignTop)
-        self.info_label.setStyleSheet("background-color: #1e1e1e; color: white; border: 1px solid #d12626;")
-        dashboard_dati.addWidget(self.info_label)
+        pannello_dati = QWidget()
+        pannello_dati.setObjectName("pannello_dati")
+        dati_layout = QVBoxLayout(pannello_dati)
+        dati_layout.setContentsMargins(15, 10, 10, 10)
+        dati_layout.setSpacing(5)
 
-        # Pulsante per arresto applicazione
-        self.btn_stop = QPushButton("Arresta")
+        sezione_titolo = QLabel("CONNOTATI E CONTRASSEGNI")
+        sezione_titolo.setObjectName("sezione_titolo")
+        dati_layout.addWidget(sezione_titolo)
+
+        separatore = QFrame()
+        separatore.setFrameShape(QFrame.Shape.HLine)
+        separatore.setStyleSheet("color: #c0b090;")
+        dati_layout.addWidget(separatore)
+
+        griglia = QGridLayout()
+        griglia.setSpacing(10)
+
+        campo_eta, self.valore_eta = self.crea_campo("ETÀ")
+        campo_genere, self.valore_genere = self.crea_campo("GENERE")
+        griglia.addWidget(campo_eta, 0, 0)
+        griglia.addWidget(campo_genere, 0, 1)
+
+        campo_espressione, self.valore_espressione = self.crea_campo("ESPRESSIONE FACCIALE")
+        griglia.addWidget(campo_espressione, 1, 0, 1, 2)
+
+        campo_occhi, self.valore_occhi = self.crea_campo("COLORE OCCHI")
+        campo_capelli, self.valore_capelli = self.crea_campo("COLORE CAPELLI")
+        griglia.addWidget(campo_occhi, 2, 0)
+        griglia.addWidget(campo_capelli, 2, 1)
+
+        campo_pelle, self.valore_pelle = self.crea_campo("INCARNATO")
+        griglia.addWidget(campo_pelle, 3, 0, 1, 2)
+        dati_layout.addLayout(griglia)
+        dati_layout.addStretch()
+
+        self.btn_stop = QPushButton("TERMINA SESSIONE")
+        self.btn_stop.setObjectName("btn_chiudi")
+        self.btn_stop.setCursor(Qt.CursorShape.PointingHandCursor)
         self.btn_stop.clicked.connect(self.close)
-        dashboard_dati.addWidget(self.btn_stop)
-        layout.addLayout(dashboard_dati, stretch=1)
+        dati_layout.addWidget(self.btn_stop)
+
+        corpo.addWidget(pannello_dati, stretch=1)
+        layout_principale.addLayout(corpo)
 
         self.timer_riconnessione = QTimer(self)
         self.timer_riconnessione.setInterval(3000)
@@ -64,6 +119,32 @@ class MainWindow(QMainWindow):
 
         self.avvia_video_thread()
         self.avvia_worker_thread()
+
+    def crea_campo(self, testo_etichetta):
+        """
+            Funzione che crea un widget campo con etichetta e valore per la dashboard
+
+            Args:
+                testo_etichetta: testo dell'etichetta del campo
+            
+            Returns:
+                tuple: (contenitore QWidget, QLabel del valore)
+        """
+
+        contenitore = QWidget()
+        layout = QVBoxLayout(contenitore)
+        layout.setContentsMargins(0, 5, 0, 5)
+        layout.setSpacing(2)
+
+        etichetta = QLabel(testo_etichetta)
+        etichetta.setProperty("ruolo", "etichetta")
+        layout.addWidget(etichetta)
+
+        valore = QLabel(VALORE_DEFAULT)
+        valore.setProperty("ruolo", "valore")
+        layout.addWidget(valore)
+
+        return contenitore, valore
         
     def avvia_video_thread(self):
         """
@@ -141,7 +222,7 @@ class MainWindow(QMainWindow):
         self.video_label.clear()
         self.video_label.setWordWrap(True)
         self.video_label.setText("Webcam disconnessa. \nRiconnessione in corso...")
-        self.info_label.setText("<b>Dati rilevati</b><br>In attesa di rilevazione...")
+        self.reset_dashboard()
         self.video_thread.imposta_regione_volto(None)
         if not self.timer_riconnessione.isActive():
             self.timer_riconnessione.start()
@@ -164,24 +245,27 @@ class MainWindow(QMainWindow):
         """
 
         self.timer_nessun_volto.stop()
-        testo = (
-            f"<b>Dati rilevati</b><br><br>"
-            f"<b>Età:</b> {dati['eta']} anni<br>"
-            f"<b>Genere:</b> {dati['genere']}<br>"
-            f"<b>Espressione:</b> {dati['emozione']}<br>"
-            f"<b>Colore occhi:</b> {dati.get('colore_occhi','Non rilevato')}<br>"
-            f"<b>Colore capelli:</b> {dati.get('colore_capelli','Non rilevato')}<br>"
-            f"<b>Colore pelle:</b> {dati.get('colore_pelle','Non rilevato')}<br>"
-        )
-        self.info_label.setText(testo)
+
+        self.valore_eta.setText(f"{dati['eta']} anni")
+        self.valore_genere.setText(dati["genere"])
+        self.valore_espressione.setText(dati["emozione"])
+        self.valore_occhi.setText(dati.get("colore_occhi", "Non rilevato"))
+        self.valore_capelli.setText(dati.get("colore_capelli", "Non rilevato"))
+        self.valore_pelle.setText(dati.get("colore_pelle", "Non rilevato"))
+
         self.video_thread.imposta_regione_volto(dati.get("regione"))
 
     def reset_dashboard(self):
         """
-            Funzione che reimposta la dashboard dei dati ed elimina il riquadro che rileva la regione del volto dal video
+            Funzione che reimposta la dashboard dei dati ai valori di default ed elimina il riquadro che rileva la regione del volto dal video
         """
-
-        self.info_label.setText("<b>Dati rilevati</b><br>In attesa di rilevazione...")
+        
+        self.valore_eta.setText(VALORE_DEFAULT)
+        self.valore_genere.setText(VALORE_DEFAULT)
+        self.valore_espressione.setText(VALORE_DEFAULT)
+        self.valore_occhi.setText(VALORE_DEFAULT)
+        self.valore_capelli.setText(VALORE_DEFAULT)
+        self.valore_pelle.setText(VALORE_DEFAULT)
         self.video_thread.imposta_regione_volto(None)
 
     def tenta_riconnessione(self):

@@ -1,0 +1,43 @@
+QMainWindow {
+    background-color: #1a1a1a;
+}
+
+#titolo {
+    color: #f5f0e1;
+    font-family: 'Courier New', monospace;
+    font-size: 42px;
+    font-weight: bold;
+    letter-spacing: 4px;
+}
+
+#sottotitolo {
+    color: #8b7355;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    letter-spacing: 6px;
+    margin-top: 10px;
+}
+
+#linea_decorativa {
+    color: #8b0000;
+    font-size: 10px;
+}
+
+QPushButton#btn_inizia {
+    background-color: #8b0000;
+    color: #f5f0e1;
+    font-family: 'Courier New', monospace;
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 4px;
+    border: 2px solid #5a0000;
+}
+
+QPushButton#btn_inizia:hover {
+    background-color: #a01010;
+    border: 2px solid #8b0000;
+}
+
+QPushButton#btn_inizia:pressed {
+    background-color: #6a0000;
+}

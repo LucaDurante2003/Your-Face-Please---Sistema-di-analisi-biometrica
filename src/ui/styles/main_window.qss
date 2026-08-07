@@ -1,0 +1,86 @@
+QMainWindow {
+    background-color: #f5f0e1;
+}
+
+#header {
+    background-color: #2c4a2c;
+}
+
+#header_titolo {
+    color: #f5f0e1;
+    font-family: 'Courier New', monospace;
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 3px;
+}
+
+#header_sottotitolo {
+    color: #c0b090;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+#video_label {
+    background-color: #1e1e1e;
+    border: 3px solid #5a5040;
+    color: #f5f0e1;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+}
+
+#pannello_dati {
+    background-color: #f5f0e1;
+    border-left: 2px solid #c0b090;
+}
+
+#sezione_titolo {
+    color: #5a5040;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+QLabel[ruolo="etichetta"] {
+    color: #5a5040;
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+QLabel[ruolo="valore"] {
+    color: #1a1a1a;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 16px;
+    border-bottom: 1px solid #c0b090;
+    padding-bottom: 4px;
+    min-height: 22px;
+}
+
+#btn_chiudi {
+    background-color: #8b0000;
+    color: #f5f0e1;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    border: 2px solid #5a0000;
+    padding: 10px 20px;
+}
+
+#btn_chiudi:hover {
+    background-color: #a01010;
+    border-color: #8b0000;
+}
+
+#btn_chiudi:pressed {
+    background-color: #6a0000;
+}
+
+QStatusBar {
+    background-color: #2c4a2c;
+    color: #c0b090;
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+}
