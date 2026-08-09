@@ -101,6 +101,8 @@ class VideoThread(QThread):
                 immagine_qt = QImage(dati, w_img, h_img, bytes_per_linea, QImage.Format.Format_RGB888).copy()
                 self.frame_per_video.emit(immagine_qt)
                 
+                frame.fill(0)
+                rgb_frame.fill(0)
                 del frame
                 del rgb_frame
                 self.msleep(33)

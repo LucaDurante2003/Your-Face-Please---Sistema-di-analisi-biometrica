@@ -75,6 +75,7 @@ class WorkerThread(QThread):
                 logger.error("Errore nell'analisi del WorkerThread: %s", e, exc_info=True)
                 self.errore.emit("Errore nell'analisi")
             finally:
+                frame.fill(0)
                 del frame
     
     def stop(self):

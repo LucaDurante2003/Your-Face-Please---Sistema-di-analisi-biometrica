@@ -21,12 +21,10 @@ class MainWindow(QMainWindow):
         """
         
         super().__init__()
-        self.setWindowTitle("Your Face, Please - Analisi")
+        self.setWindowTitle("Your Face, Please")
         self.resize(1100, 650)
 
-        base = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-        path_icona = os.path.join(base,"img","window.ico")
-
+        path_icona = os.path.join(os.path.dirname(__file__), "img", "icon.png")
         if os.path.exists(path_icona):
             self.setWindowIcon(QIcon(path_icona))
 
@@ -44,13 +42,9 @@ class MainWindow(QMainWindow):
         header.setObjectName("header")
         header_layout = QVBoxLayout(header)
         header_layout.setContentsMargins(15, 10, 15, 10)
-        header_layout.setSpacing(2)
-        titolo = QLabel("YOUR FACE, PLEASE")
+        titolo = QLabel("DOCUMENTO DI RICONOSCIMENTO BIOMETRICO")
         titolo.setObjectName("header_titolo")
         header_layout.addWidget(titolo)
-        sottotitolo = QLabel("DOCUMENTO DI RICONOSCIMENTO BIOMETRICO")
-        sottotitolo.setObjectName("header_sottotitolo")
-        header_layout.addWidget(sottotitolo)
         layout_principale.addWidget(header)
 
         corpo = QHBoxLayout()
@@ -78,25 +72,18 @@ class MainWindow(QMainWindow):
         separatore.setStyleSheet("color: #c0b090;")
         dati_layout.addWidget(separatore)
 
-        griglia = QGridLayout()
-        griglia.setSpacing(10)
-
         campo_eta, self.valore_eta = self.crea_campo("ETÀ")
+        dati_layout.addWidget(campo_eta)
         campo_genere, self.valore_genere = self.crea_campo("GENERE")
-        griglia.addWidget(campo_eta, 0, 0)
-        griglia.addWidget(campo_genere, 0, 1)
-
-        campo_espressione, self.valore_espressione = self.crea_campo("ESPRESSIONE FACCIALE")
-        griglia.addWidget(campo_espressione, 1, 0, 1, 2)
-
-        campo_occhi, self.valore_occhi = self.crea_campo("COLORE OCCHI")
-        campo_capelli, self.valore_capelli = self.crea_campo("COLORE CAPELLI")
-        griglia.addWidget(campo_occhi, 2, 0)
-        griglia.addWidget(campo_capelli, 2, 1)
-
+        dati_layout.addWidget(campo_genere)
+        campo_occhi, self.valore_occhi = self.crea_campo("OCCHI")
+        dati_layout.addWidget(campo_occhi)
+        campo_capelli, self.valore_capelli = self.crea_campo("CAPELLI")
+        dati_layout.addWidget(campo_capelli)
         campo_pelle, self.valore_pelle = self.crea_campo("INCARNATO")
-        griglia.addWidget(campo_pelle, 3, 0, 1, 2)
-        dati_layout.addLayout(griglia)
+        dati_layout.addWidget(campo_pelle)
+        campo_espressione, self.valore_espressione = self.crea_campo("ESPRESSIONE")
+        dati_layout.addWidget(campo_espressione)
         dati_layout.addStretch()
 
         self.btn_stop = QPushButton("TERMINA SESSIONE")

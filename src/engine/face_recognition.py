@@ -107,6 +107,11 @@ def analizza_volto(frame, larghezza_downscaling=320):
         emozione = volto.get("dominant_emotion","")
         eta = int(volto.get("age",0))
 
+        frame_downscaling.fill(0)
+        ritaglio_volto.fill(0)
+        del frame_downscaling
+        del ritaglio_volto
+
         return {
             "eta": eta,
             "genere": GENERE_ITA.get(genere, "Non rilevato"),

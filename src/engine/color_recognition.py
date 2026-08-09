@@ -5,7 +5,6 @@
 
 import cv2
 import numpy as np
-from sklearn.cluster import KMeans
 
 def classifica_colore_occhi(h, s, v):
     """

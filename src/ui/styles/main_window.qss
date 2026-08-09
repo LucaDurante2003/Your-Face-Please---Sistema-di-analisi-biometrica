@@ -8,17 +8,10 @@ QMainWindow {
 
 #header_titolo {
     color: #f5f0e1;
-    font-family: 'Courier New', monospace;
+    font-family: 'Times New Roman', 'Courier New', monospace;
     font-size: 18px;
     font-weight: bold;
     letter-spacing: 3px;
-}
-
-#header_sottotitolo {
-    color: #c0b090;
-    font-family: 'Courier New', monospace;
-    font-size: 11px;
-    letter-spacing: 2px;
 }
 
 #video_label {
@@ -26,7 +19,7 @@ QMainWindow {
     border: 3px solid #5a5040;
     color: #f5f0e1;
     font-family: 'Courier New', monospace;
-    font-size: 13px;
+    font-size: 15px;
 }
 
 #pannello_dati {
@@ -37,7 +30,7 @@ QMainWindow {
 #sezione_titolo {
     color: #5a5040;
     font-family: 'Courier New', monospace;
-    font-size: 12px;
+    font-size: 16px;
     font-weight: bold;
     letter-spacing: 2px;
 }
@@ -45,14 +38,14 @@ QMainWindow {
 QLabel[ruolo="etichetta"] {
     color: #5a5040;
     font-family: 'Courier New', monospace;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: bold;
 }
 
 QLabel[ruolo="valore"] {
     color: #1a1a1a;
     font-family: 'Georgia', 'Times New Roman', serif;
-    font-size: 16px;
+    font-size: 15px;
     border-bottom: 1px solid #c0b090;
     padding-bottom: 4px;
     min-height: 22px;
@@ -82,5 +75,5 @@ QStatusBar {
     background-color: #2c4a2c;
     color: #c0b090;
     font-family: 'Courier New', monospace;
-    font-size: 10px;
+    font-size: 12px;
 }
