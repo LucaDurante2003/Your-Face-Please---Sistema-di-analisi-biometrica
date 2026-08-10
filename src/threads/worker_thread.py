@@ -39,6 +39,8 @@ class WorkerThread(QThread):
                 frame: frame da salvare
         """
         self.mutex.lock()
+        if self.frame_corrente is not None:
+            self.frame_corrente.fill(0)
         self.frame_corrente = frame.copy()
         self.condizione.wakeOne()
         self.mutex.unlock()
@@ -75,8 +77,9 @@ class WorkerThread(QThread):
                 logger.error("Errore nell'analisi del WorkerThread: %s", e, exc_info=True)
                 self.errore.emit("Errore nell'analisi")
             finally:
-                frame.fill(0)
-                del frame
+                if frame is not None:
+                    frame.fill(0)
+                    del frame
     
     def stop(self):
         """

@@ -61,58 +61,67 @@ class VideoThread(QThread):
                 self.webcam_disconnessa.emit()
                 return
             errori_consecutivi = 0
+
             while self.is_running:
-                ret, frame = cap.read()
-                if not ret or frame is None:
-                    errori_consecutivi += 1
-                    if errori_consecutivi > 30:
-                        self.errore.emit("La webcam è irraggiungibile")
-                        self.webcam_disconnessa.emit()
-                        break
-                    self.msleep(100)
-                    continue
-                errori_consecutivi = 0
+                frame = None
+                rgb_frame = None
 
-                self.contatore_frame += 1
-                if self.contatore_frame >= 5:
-                    self.contatore_frame = 0
-                    self.frame_per_analisi.emit(frame)
-
-                self.mutex_regione.lock()
-                regione = self.regione_volto
-                self.mutex_regione.unlock()
-                if regione is not None:
-                    x = regione["x"]
-                    y = regione["y"]
-                    w = regione["w"]
-                    h = regione["h"]
-                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-                
                 try:
-                    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                except cv2.error as e:
-                    logger.error("Errore nella conversione del colore: %s", e, exc_info=True)
-                    self.errore.emit("Conversione colore non andata a buon fine")
-                    continue
-            
-                h_img, w_img, ch_img = rgb_frame.shape
-                bytes_per_linea = ch_img * w_img
-                dati = rgb_frame.tobytes()
-                immagine_qt = QImage(dati, w_img, h_img, bytes_per_linea, QImage.Format.Format_RGB888).copy()
-                self.frame_per_video.emit(immagine_qt)
+                    ret, frame = cap.read()
+                    if not ret or frame is None:
+                        errori_consecutivi += 1
+                        if errori_consecutivi > 30:
+                            self.errore.emit("La webcam è irraggiungibile")
+                            self.webcam_disconnessa.emit()
+                            break
+                        self.msleep(100)
+                        continue
+                    errori_consecutivi = 0
+
+                    self.contatore_frame += 1
+                    if self.contatore_frame >= 5:
+                        self.contatore_frame = 0
+                        self.frame_per_analisi.emit(frame.copy())
+
+                    self.mutex_regione.lock()
+                    regione = self.regione_volto
+                    self.mutex_regione.unlock()
+                    if regione is not None:
+                        x = regione["x"]
+                        y = regione["y"]
+                        w = regione["w"]
+                        h = regione["h"]
+                        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 
-                frame.fill(0)
-                rgb_frame.fill(0)
-                del frame
-                del rgb_frame
-                self.msleep(33)
+                    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                    h_img, w_img, ch_img = rgb_frame.shape
+                    bytes_per_linea = ch_img * w_img
+                    dati = rgb_frame.tobytes()
+                    immagine_qt = QImage(dati, w_img, h_img, bytes_per_linea, QImage.Format.Format_RGB888).copy()
+
+                    self.frame_per_video.emit(immagine_qt)
+                    self.msleep(33)
+                except cv2.error as e:
+                    logger.error("Errore OpenCV nel ciclo: %s", e, exc_info=True)
+                    self.errore.emit("Errore nell'elaborazione visiva")
+
+                except Exception as e:
+                    logger.error("Errore generico nel ciclo: %s", e, exc_info=True)
+                    self.errore.emit("Errore nell'elaborazione visiva")
+                finally:
+                    if frame is not None:
+                        frame.fill(0)
+                        del frame
+                    if rgb_frame is not None:
+                        rgb_frame.fill(0)
+                        del rgb_frame
         except Exception as e:
             logger.error("Errore nel VideoThread: %s", e, exc_info=True)
-            self.errore.emit("Problema nel VideoThread")
-
+            self.errore.emit("Errore nel VideoThread")
         finally:
             if cap is not None:
                 cap.release()
+        
 
     def stop(self):
         """
