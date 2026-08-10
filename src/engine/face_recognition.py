@@ -35,6 +35,9 @@ def analizza_volto(frame, larghezza_downscaling=320):
             dict: dizionario con i risultati di interesse (età, genere, emozione, regione)
     """
 
+    frame_downscaling = None
+    ritaglio_volto = None
+    frame_creato_qui = False
     try:
         altezza_originale, larghezza_originale = frame.shape[:2]
         if larghezza_originale <= larghezza_downscaling:
@@ -44,6 +47,7 @@ def analizza_volto(frame, larghezza_downscaling=320):
             scala = larghezza_originale / larghezza_downscaling
             altezza_downscaling = int(altezza_originale / scala)
             frame_downscaling = cv2.resize(frame, (larghezza_downscaling, altezza_downscaling))
+            frame_creato_qui = True
 
         volti = RetinaFace.detect_faces(frame_downscaling)
 
@@ -65,6 +69,8 @@ def analizza_volto(frame, larghezza_downscaling=320):
         x1, y1, x2, y2 = regione_downscaling
         x1 = max(0, x1)
         y1 = max(0, y1)
+        x2 = min(frame_downscaling.shape[1], x2)
+        y2 = min(frame_downscaling.shape[0], y2)
         ritaglio_volto = frame_downscaling[y1:y2, x1:x2]
 
         if ritaglio_volto.size == 0:
@@ -107,11 +113,6 @@ def analizza_volto(frame, larghezza_downscaling=320):
         emozione = volto.get("dominant_emotion","")
         eta = int(volto.get("age",0))
 
-        frame_downscaling.fill(0)
-        ritaglio_volto.fill(0)
-        del frame_downscaling
-        del ritaglio_volto
-
         return {
             "eta": eta,
             "genere": GENERE_ITA.get(genere, "Non rilevato"),
@@ -119,6 +120,14 @@ def analizza_volto(frame, larghezza_downscaling=320):
             "regione": regione,
             "landmarks": landmarks
         }
+
     except Exception as e:
         logger.error("Errore nell'analisi del volto: %s", e, exc_info=True)
         return None
+    
+    finally:
+        if ritaglio_volto is not None:
+            del ritaglio_volto
+        if frame_creato_qui and frame_downscaling is not None:
+            frame_downscaling.fill(0)
+            del frame_downscaling

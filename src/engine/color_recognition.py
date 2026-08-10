@@ -311,19 +311,35 @@ def analizza_colori(frame, landmark, regione):
         "colore_pelle": "Non rilevato",
     }
 
-    roi_occhi = estrai_roi_occhi(frame, landmark)
-    hsv_occhi = colore_dominante_hsv(roi_occhi)
-    if hsv_occhi is not None:
-        risultati["colore_occhi"] = classifica_colore_occhi(hsv_occhi[0], hsv_occhi[1], hsv_occhi[2])
+    roi_occhi = None
+    roi_capelli = None
+    roi_pelle = None
+
+    try:
+        roi_occhi = estrai_roi_occhi(frame, landmark)
+        hsv_occhi = colore_dominante_hsv(roi_occhi)
+        if hsv_occhi is not None:
+            risultati["colore_occhi"] = classifica_colore_occhi(hsv_occhi[0], hsv_occhi[1], hsv_occhi[2])
     
-    roi_capelli = estrai_roi_capelli(frame, landmark, regione)
-    hsv_capelli = colore_dominante_hsv(roi_capelli)
-    if hsv_capelli is not None:
-        risultati["colore_capelli"] = classifica_colore_capelli(hsv_capelli[0], hsv_capelli[1], hsv_capelli[2])
+        roi_capelli = estrai_roi_capelli(frame, landmark, regione)
+        hsv_capelli = colore_dominante_hsv(roi_capelli)
+        if hsv_capelli is not None:
+            risultati["colore_capelli"] = classifica_colore_capelli(hsv_capelli[0], hsv_capelli[1], hsv_capelli[2])
     
-    roi_pelle = estrai_roi_pelle(frame, landmark)
-    hsv_pelle = colore_dominante_hsv(roi_pelle)
-    if hsv_pelle is not None:
-        risultati["colore_pelle"] = classifica_colore_pelle(hsv_pelle[0], hsv_pelle[1], hsv_pelle[2])
+        roi_pelle = estrai_roi_pelle(frame, landmark)
+        hsv_pelle = colore_dominante_hsv(roi_pelle)
+        if hsv_pelle is not None:
+            risultati["colore_pelle"] = classifica_colore_pelle(hsv_pelle[0], hsv_pelle[1], hsv_pelle[2])
     
-    return risultati
+        return risultati
+    
+    finally:
+        if roi_occhi is not None:
+            roi_occhi.fill(0)
+            del roi_occhi
+        if roi_capelli is not None:
+            roi_capelli.fill(0)
+            del roi_capelli
+        if roi_pelle is not None:
+            roi_pelle.fill(0)
+            del roi_pelle

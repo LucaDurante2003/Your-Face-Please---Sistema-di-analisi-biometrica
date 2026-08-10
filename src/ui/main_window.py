@@ -104,8 +104,8 @@ class MainWindow(QMainWindow):
         self.timer_nessun_volto.setInterval(3000)
         self.timer_nessun_volto.timeout.connect(self.reset_dashboard)
 
-        self.avvia_video_thread()
         self.avvia_worker_thread()
+        self.avvia_video_thread()
 
     def crea_campo(self, testo_etichetta):
         """
@@ -152,8 +152,7 @@ class MainWindow(QMainWindow):
         self.video_thread.frame_per_video.connect(self.aggiorna_video)
         self.video_thread.errore.connect(self.mostra_errore)
         self.video_thread.webcam_disconnessa.connect(self._webcam_disconnessa)
-        if hasattr(self, 'worker_thread'):
-            self.video_thread.frame_per_analisi.connect(self.worker_thread.aggiorna_frame)
+        self.video_thread.frame_per_analisi.connect(self.worker_thread.aggiorna_frame)
         self.video_thread.start()
 
     def avvia_worker_thread(self):
@@ -162,7 +161,6 @@ class MainWindow(QMainWindow):
         """
 
         self.worker_thread = WorkerThread()
-        self.video_thread.frame_per_analisi.connect(self.worker_thread.aggiorna_frame)
         self.worker_thread.risultati_analisi.connect(self.aggiorna_dashboard)
         self.worker_thread.nessun_volto.connect(self.gestisci_nessun_volto)
         self.worker_thread.errore.connect(self.mostra_errore)

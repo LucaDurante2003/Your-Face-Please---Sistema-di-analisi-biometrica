@@ -108,6 +108,7 @@ class VideoThread(QThread):
                 except Exception as e:
                     logger.error("Errore generico nel ciclo: %s", e, exc_info=True)
                     self.errore.emit("Errore nell'elaborazione visiva")
+
                 finally:
                     if frame is not None:
                         frame.fill(0)
@@ -115,13 +116,14 @@ class VideoThread(QThread):
                     if rgb_frame is not None:
                         rgb_frame.fill(0)
                         del rgb_frame
+
         except Exception as e:
             logger.error("Errore nel VideoThread: %s", e, exc_info=True)
             self.errore.emit("Errore nel VideoThread")
+
         finally:
             if cap is not None:
                 cap.release()
-        
 
     def stop(self):
         """
