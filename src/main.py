@@ -4,7 +4,7 @@
 
 from PySide6.QtWidgets import QApplication
 import sys
-from src.ui import StartWindow
+from ui import StartWindow
 import logging
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s")

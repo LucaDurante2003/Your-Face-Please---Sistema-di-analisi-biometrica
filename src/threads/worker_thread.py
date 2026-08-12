@@ -3,7 +3,7 @@
 """
 
 from PySide6.QtCore import QThread, Signal, QMutex, QWaitCondition
-from src.engine import analizza_volto, analizza_colori
+from engine import analizza_volto, analizza_colori
 import logging
 
 logger = logging.getLogger(__name__)

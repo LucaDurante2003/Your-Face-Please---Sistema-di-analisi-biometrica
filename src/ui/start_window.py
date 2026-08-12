@@ -6,7 +6,7 @@ import os
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon, QFontDatabase, QPixmap
 from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QSpacerItem, QSizePolicy)
-from src.ui.main_window import MainWindow
+from ui import MainWindow
 
 class StartWindow(QMainWindow):
     """
