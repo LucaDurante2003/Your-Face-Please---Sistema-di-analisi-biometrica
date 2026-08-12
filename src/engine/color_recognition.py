@@ -193,32 +193,20 @@ def estrai_roi_capelli(frame, landmark, regione):
     x = regione["x"]
     y = regione["y"]
     w = regione["w"]
-    altezza_roi = int(regione["h"] * 0.35)
+    h = regione["h"]
 
-    margine_laterale = int(w * 0.1)
-
-    y1 = max(0, y - altezza_roi)
+    y1 = max(0, y - int(h * 0.25))
     y2 = max(0, y)
-    x1 = max(0, x - margine_laterale)
-    x2 = min(larghezza_frame, x + w + margine_laterale)
+    
+    offset_x = int(w * 0.35)
+    x1 = max(0, x + offset_x)
+    x2 = min(larghezza_frame, x + w - offset_x)
 
-    if (x2 - x1) < 10 or (y2 - y1) < 10:
+    if (x2 - x1) < 10 or (y2 - y1) < 5:
         return None
     
     roi_bgr = frame[y1:y2, x1:x2]
-    roi_hsv = cv2.cvtColor(roi_bgr, cv2.COLOR_BGR2HSV)
-
-    maschera_pelle = cv2.inRange(roi_hsv, np.array([0, 30, 80]), np.array([25, 170, 255]))
-    maschera_blu = cv2.inRange(roi_hsv, np.array([90, 50, 50]), np.array([140, 255, 255]))
-    maschera_verde = cv2.inRange(roi_hsv, np.array([35, 50, 50]), np.array([85, 255, 255]))
-    maschera_escludi = maschera_pelle | maschera_blu | maschera_verde
-    maschera_capelli = cv2.bitwise_not(maschera_escludi)
-    pixel_capelli = roi_bgr[maschera_capelli > 0]
-    
-    if len(pixel_capelli) < 20:
-        return None
-    
-    return pixel_capelli.reshape(-1, 1, 3)
+    return roi_bgr
 
 def estrai_roi_pelle(frame, landmark):
     """
@@ -316,6 +304,11 @@ def analizza_colori(frame, landmark, regione):
     roi_pelle = None
 
     try:
+        roi_pelle = estrai_roi_pelle(frame, landmark)
+        hsv_pelle = colore_dominante_hsv(roi_pelle)
+        if hsv_pelle is not None:
+            risultati["colore_pelle"] = classifica_colore_pelle(hsv_pelle[0], hsv_pelle[1], hsv_pelle[2])
+
         roi_occhi = estrai_roi_occhi(frame, landmark)
         hsv_occhi = colore_dominante_hsv(roi_occhi)
         if hsv_occhi is not None:
@@ -325,11 +318,6 @@ def analizza_colori(frame, landmark, regione):
         hsv_capelli = colore_dominante_hsv(roi_capelli)
         if hsv_capelli is not None:
             risultati["colore_capelli"] = classifica_colore_capelli(hsv_capelli[0], hsv_capelli[1], hsv_capelli[2])
-    
-        roi_pelle = estrai_roi_pelle(frame, landmark)
-        hsv_pelle = colore_dominante_hsv(roi_pelle)
-        if hsv_pelle is not None:
-            risultati["colore_pelle"] = classifica_colore_pelle(hsv_pelle[0], hsv_pelle[1], hsv_pelle[2])
     
         return risultati
     

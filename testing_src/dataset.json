@@ -1,0 +1,402 @@
+{
+    "test_img_01.jpg": {
+        "eta": 35,
+        "genere": "Donna",
+        "emozione": "Neutro",
+        "occhi": "Verde-Grigio",
+        "capelli": "Rosso scuro",
+        "pelle": "Chiaro"
+    },
+    "test_img_02.jpg": {
+        "eta": 42,
+        "genere": "Uomo",
+        "emozione": "Felice",
+        "occhi": "Verde-Grigio",
+        "capelli": "Castano chiaro",
+        "pelle": "Chiaro"
+    },
+    "test_img_03.jpg": {
+        "eta": 24,
+        "genere": "Uomo",
+        "emozione": "Arrabbiato",
+        "occhi": "Marrone scuro",
+        "capelli": "Castano scuro",
+        "pelle": "Chiaro"
+    },
+    "test_img_04.jpg": {
+        "eta": 57,
+        "genere": "Donna",
+        "emozione": "Neutro",
+        "occhi": "Blu",
+        "capelli": "Rosso / Ramato",
+        "pelle": "Chiaro"
+    },
+    "test_img_05.jpg": {
+        "eta": 45,
+        "genere": "Donna",
+        "emozione": "Felice",
+        "occhi": "Marrone chiaro",
+        "capelli": "Castano",
+        "pelle": "Chiaro"
+    },
+    "test_img_06.jpg": {
+        "eta": 51,
+        "genere": "Uomo",
+        "emozione": "Neutro",
+        "occhi": "Marrone chiaro",
+        "capelli": "Castano",
+        "pelle": "Chiaro"
+    },
+    "test_img_07.jpg": {
+        "eta": 52,
+        "genere": "Donna",
+        "emozione": "Felice",
+        "occhi": "Marrone scuro",
+        "capelli": "Biondo chiaro",
+        "pelle": "Chiaro"
+    },
+    "test_img_08.jpg": {
+        "eta": 47,
+        "genere": "Uomo",
+        "emozione": "Neutro",
+        "occhi": "Ambra / Nocciola",
+        "capelli": "Nero",
+        "pelle": "Scuro"
+    },
+    "test_img_09.jpg": {
+        "eta": 14,
+        "genere": "Donna",
+        "emozione": "Felice",
+        "occhi": "Verde-Grigio",
+        "capelli": "Biondo chiaro",
+        "pelle": "Molto chiaro"
+    },
+    "test_img_10.jpg": {
+        "eta": 39,
+        "genere": "Uomo",
+        "emozione": "Felice",
+        "occhi": "Marrone chiaro",
+        "capelli": "Rosso scuro",
+        "pelle": "Chiaro"
+    },
+    "test_img_11.jpg": {
+        "eta": 28,
+        "genere": "Donna",
+        "emozione": "Felice",
+        "occhi": "Verde-Grigio",
+        "capelli": "Nero",
+        "pelle": "Chiaro"
+    },
+    "test_img_12.jpg": {
+        "eta": 38,
+        "genere": "Donna",
+        "emozione": "Felice",
+        "occhi": "Marrone scuro",
+        "capelli": "Castano scuro",
+        "pelle": "Olivastro"
+    },
+    "test_img_13.jpg": {
+        "eta": 40,
+        "genere": "Uomo",
+        "emozione": "Felice",
+        "occhi": "Verde-Grigio",
+        "capelli": "Castano scuro",
+        "pelle": "Chiaro"
+    },
+    "test_img_14.jpg": {
+        "eta": 49,
+        "genere": "Uomo",
+        "emozione": "Neutro",
+        "occhi": "Verde-Grigio",
+        "capelli": "Nero",
+        "pelle": "Medio"
+    },
+    "test_img_15.jpg": {
+        "eta": 39,
+        "genere": "Donna",
+        "emozione": "Felice",
+        "occhi": "Marrone scuro",
+        "capelli": "Castano",
+        "pelle": "Medio"
+    },
+    "test_img_16.jpg": {
+        "eta": 35,
+        "genere": "Uomo",
+        "emozione": "Felice",
+        "occhi": "Marrone chiaro",
+        "capelli": "Castano chiaro",
+        "pelle": "Chiaro"
+    },
+    "test_img_17.jpg": {
+        "eta": 44,
+        "genere": "Donna",
+        "emozione": "Felice",
+        "occhi": "Marrone scuro",
+        "capelli": "Castano",
+        "pelle": "Scuro"
+    },
+    "test_img_18.jpg": {
+        "eta": 24,
+        "genere": "Donna",
+        "emozione": "Neutro",
+        "occhi": "Verde",
+        "capelli": "Biondo chiaro",
+        "pelle": "Chiaro"
+    },
+    "test_img_19.jpg": {
+        "eta": 50,
+        "genere": "Uomo",
+        "emozione": "Arrabbiato",
+        "occhi": "Marrone scuro",
+        "capelli": "Castano scuro",
+        "pelle": "Olivastro"
+    },
+    "test_img_20.jpg": {
+        "eta": 47,
+        "genere": "Uomo",
+        "emozione": "Neutro",
+        "occhi": "Verde-Grigio",
+        "capelli": "Rosso scuro",
+        "pelle": "Chiaro"
+    },
+    "test_img_21.jpg": {
+        "eta": 26,
+        "genere": "Donna",
+        "emozione": "Felice",
+        "occhi": "Marrone scuro",
+        "capelli": "Nero",
+        "pelle": "Chiaro"
+    },
+    "test_img_22.jpg": {
+        "eta": 68,
+        "genere": "Uomo",
+        "emozione": "Neutro",
+        "occhi": "Verde-Grigio",
+        "capelli": "Grigio",
+        "pelle": "Chiaro"
+    },
+    "test_img_23.jpg": {
+        "eta": 59,
+        "genere": "Uomo",
+        "emozione": "Neutro",
+        "occhi": "Verde",
+        "capelli": "Rosso scuro",
+        "pelle": "Chiaro"
+    },
+    "test_img_24.jpg": {
+        "eta": 35,
+        "genere": "Uomo",
+        "emozione": "Felice",
+        "occhi": "Marrone chiaro",
+        "capelli": "Rosso scuro",
+        "pelle": "Medio"
+    },
+    "test_img_25.jpg": {
+        "eta": 58,
+        "genere": "Uomo",
+        "emozione": "Neutro",
+        "occhi": "Verde-Grigio",
+        "capelli": "Bianco / Grigio",
+        "pelle": "Chiaro"
+    },
+    "test_img_26.jpg": {
+        "eta": 25,
+        "genere": "Donna",
+        "emozione": "Neutro",
+        "occhi": "Nero / Marrone molto scuro",
+        "capelli": "Castano scuro",
+        "pelle": "Medio"
+    },
+    "test_img_27.jpg": {
+        "eta": 34,
+        "genere": "Donna",
+        "emozione": "Neutro",
+        "occhi": "Marrone scuro",
+        "capelli": "Nero",
+        "pelle": "Chiaro"
+    },
+    "test_img_28.jpg": {
+        "eta": 32,
+        "genere": "Donna",
+        "emozione": "Neutro",
+        "occhi": "Blu",
+        "capelli": "Biondo chiaro",
+        "pelle": "Chiaro"
+    },
+    "test_img_29.jpg": {
+        "eta": 36,
+        "genere": "Uomo",
+        "emozione": "Neutro",
+        "occhi": "Ambra / Nocciola",
+        "capelli": "Nero",
+        "pelle": "Olivastro"
+    },
+    "test_img_30.jpg": {
+        "eta": 24,
+        "genere": "Uomo",
+        "emozione": "Neutro",
+        "occhi": "Azzurro",
+        "capelli": "Rosso scuro",
+        "pelle": "Molto chiaro"
+    },
+    "test_img_31.jpg": {
+        "eta": 42,
+        "genere": "Donna",
+        "emozione": "Felice",
+        "occhi": "Marrone scuro",
+        "capelli": "Biondo chiaro",
+        "pelle": "Chiaro"
+    },
+    "test_img_32.jpg": {
+        "eta": 37,
+        "genere": "Donna",
+        "emozione": "Felice",
+        "occhi": "Marrone scuro",
+        "capelli": "Castano scuro",
+        "pelle": "Chiaro"
+    },
+    "test_img_33.jpg": {
+        "eta": 52,
+        "genere": "Donna",
+        "emozione": "Neutro",
+        "occhi": "Verde-Grigio",
+        "capelli": "Biondo chiaro",
+        "pelle": "Chiaro"
+    },
+    "test_img_34.jpg": {
+        "eta": 45,
+        "genere": "Uomo",
+        "emozione": "Neutro",
+        "occhi": "Marrone scuro",
+        "capelli": "Pelato",
+        "pelle": "Scuro"
+    },
+    "test_img_35.jpg": {
+        "eta": 15,
+        "genere": "Donna",
+        "emozione": "Neutro",
+        "occhi": "Blu",
+        "capelli": "Nero",
+        "pelle": "Chiaro"
+    },
+    "test_img_36.jpg": {
+        "eta": 17,
+        "genere": "Donna",
+        "emozione": "Neutro",
+        "occhi": "Blu",
+        "capelli": "Biondo dorato",
+        "pelle": "Chiaro"
+    },
+    "test_img_37.jpg": {
+        "eta": 35,
+        "genere": "Uomo",
+        "emozione": "Neutro",
+        "occhi": "Grigio",
+        "capelli": "Castano chiaro",
+        "pelle": "Chiaro"
+    },
+    "test_img_38.jpg": {
+        "eta": 34,
+        "genere": "Uomo",
+        "emozione": "Neutro",
+        "occhi": "Marrone chiaro",
+        "capelli": "Nero",
+        "pelle": "Medio"
+    },
+    "test_img_39.jpg": {
+        "eta": 27,
+        "genere": "Donna",
+        "emozione": "Neutro",
+        "occhi": "Marrone scuro",
+        "capelli": "Nero",
+        "pelle": "Olivastro"
+    },
+    "test_img_40.jpg": {
+        "eta": 30,
+        "genere": "Donna",
+        "emozione": "Spaventato",
+        "occhi": "Nero / Marrone molto scuro",
+        "capelli": "Nero",
+        "pelle": "Scuro"
+    },
+    "test_img_41.jpg": {
+        "eta": 35,
+        "genere": "Uomo",
+        "emozione": "Neutro",
+        "occhi": "Marrone scuro",
+        "capelli": "Nero",
+        "pelle": "Scuro"
+    },
+    "test_img_42.jpg": {
+        "eta": 27,
+        "genere": "Uomo",
+        "emozione": "Felice",
+        "occhi": "Grigio",
+        "capelli": "Rosso scuro",
+        "pelle": "Chiaro"
+    },
+    "test_img_43.jpg": {
+        "eta": 36,
+        "genere": "Donna",
+        "emozione": "Felice",
+        "occhi": "Verde",
+        "capelli": "Rosso scuro",
+        "pelle": "Chiaro"
+    },
+    "test_img_44.jpg": {
+        "eta": 15,
+        "genere": "Uomo",
+        "emozione": "Felice",
+        "occhi": "Marrone scuro",
+        "capelli": "Castano",
+        "pelle": "Chiaro"
+    },
+    "test_img_45.jpg": {
+        "eta": 43,
+        "genere": "Uomo",
+        "emozione": "Neutro",
+        "occhi": "Nocciola",
+        "capelli": "Nero",
+        "pelle": "Chiaro"
+    },
+    "test_img_46.jpg": {
+        "eta": 32,
+        "genere": "Donna",
+        "emozione": "Felice",
+        "occhi": "Verde-Grigio",
+        "capelli": "Biondo chiaro",
+        "pelle": "Chiaro"
+    },
+    "test_img_47.jpg": {
+        "eta": 37,
+        "genere": "Uomo",
+        "emozione": "Felice",
+        "occhi": "Marrone chiaro",
+        "capelli": "Castano scuro",
+        "pelle": "Chiaro"
+    },
+    "test_img_48.jpg": {
+        "eta": 24,
+        "genere": "Uomo",
+        "emozione": "Felice",
+        "occhi": "Marrone scuro",
+        "capelli": "Nero",
+        "pelle": "Chiaro"
+    },
+    "test_img_49.jpg": {
+        "eta": 69,
+        "genere": "Donna",
+        "emozione": "Felice",
+        "occhi": "Verde-Grigio",
+        "capelli": "Rosso / Ramato",
+        "pelle": "Chiaro"
+    },
+    "test_img_50.jpg": {
+        "eta": 29,
+        "genere": "Donna",
+        "emozione": "Felice",
+        "occhi": "Marrone scuro",
+        "capelli": "Castano scuro",
+        "pelle": "Medio"
+    }
+}
