@@ -1,5 +1,5 @@
 """
-    Modulo per analizzare il frame passato dal worker thread ed effettuare il riconoscimento facciale
+    Modulo per analizzare il frame passato dal worker thread ed effettuare l'analisi facciale
 """
 
 from deepface import DeepFace
@@ -71,6 +71,10 @@ def analizza_volto(frame, larghezza_downscaling=320):
         y1 = max(0, y1)
         x2 = min(frame_downscaling.shape[1], x2)
         y2 = min(frame_downscaling.shape[0], y2)
+
+        if x2 <= x1 or y2 <= y1:
+            return None
+            
         ritaglio_volto = frame_downscaling[y1:y2, x1:x2]
 
         if ritaglio_volto.size == 0:

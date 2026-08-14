@@ -31,8 +31,9 @@ class StartWindow(QMainWindow):
             QFontDatabase.addApplicationFont(path_font)
 
         path_qss = os.path.join(os.path.dirname(__file__), "styles", "start_window.qss")
-        with open(path_qss, "r", encoding="utf-8") as f:
-            self.setStyleSheet(f.read())
+        if os.path.exists(path_qss):
+            with open(path_qss, "r", encoding="utf-8") as f:
+                self.setStyleSheet(f.read())
         
         central = QWidget()
         self.setCentralWidget(central)
@@ -58,7 +59,7 @@ class StartWindow(QMainWindow):
         titolo.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(titolo)
 
-        sottotitolo = QLabel("SISTEMA DI RILEVAMENTO BIOMETRICO")
+        sottotitolo = QLabel("SISTEMA DI ANALISI BIOMETRICA")
         sottotitolo.setObjectName("sottotitolo")
         sottotitolo.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(sottotitolo)

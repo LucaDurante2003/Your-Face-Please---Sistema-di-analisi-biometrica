@@ -29,8 +29,9 @@ class MainWindow(QMainWindow):
             self.setWindowIcon(QIcon(path_icona))
 
         path_qss = os.path.join(os.path.dirname(__file__), "styles", "main_window.qss")
-        with open(path_qss, "r", encoding="utf-8") as f:
-            self.setStyleSheet(f.read())
+        if os.path.exists(path_qss):
+            with open(path_qss, "r", encoding="utf-8") as f:
+                self.setStyleSheet(f.read())
 
         main_widget = QWidget()
         self.setCentralWidget(main_widget)

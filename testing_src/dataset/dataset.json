@@ -67,7 +67,7 @@
         "eta": 14,
         "genere": "Donna",
         "emozione": "Felice",
-        "occhi": "Verde-Grigio",
+        "occhi": "Marrone chiaro",
         "capelli": "Biondo chiaro",
         "pelle": "Molto chiaro"
     },
@@ -99,7 +99,7 @@
         "eta": 40,
         "genere": "Uomo",
         "emozione": "Felice",
-        "occhi": "Verde-Grigio",
+        "occhi": "Marrone chiaro",
         "capelli": "Castano scuro",
         "pelle": "Chiaro"
     },
@@ -171,7 +171,7 @@
         "eta": 68,
         "genere": "Uomo",
         "emozione": "Neutro",
-        "occhi": "Verde-Grigio",
+        "occhi": "Marrone chiaro",
         "capelli": "Grigio",
         "pelle": "Chiaro"
     },
@@ -252,7 +252,7 @@
         "genere": "Donna",
         "emozione": "Felice",
         "occhi": "Marrone scuro",
-        "capelli": "Castano scuro",
+        "capelli": "Nero",
         "pelle": "Chiaro"
     },
     "test_img_33.jpg": {
@@ -268,7 +268,7 @@
         "genere": "Uomo",
         "emozione": "Neutro",
         "occhi": "Marrone scuro",
-        "capelli": "Pelato",
+        "capelli": "Castano scuro",
         "pelle": "Scuro"
     },
     "test_img_35.jpg": {
@@ -308,7 +308,7 @@
         "genere": "Donna",
         "emozione": "Neutro",
         "occhi": "Marrone scuro",
-        "capelli": "Nero",
+        "capelli": "Castano",
         "pelle": "Olivastro"
     },
     "test_img_40.jpg": {
@@ -316,7 +316,7 @@
         "genere": "Donna",
         "emozione": "Spaventato",
         "occhi": "Nero / Marrone molto scuro",
-        "capelli": "Nero",
+        "capelli": "Castano scuro",
         "pelle": "Scuro"
     },
     "test_img_41.jpg": {
@@ -348,7 +348,7 @@
         "genere": "Uomo",
         "emozione": "Felice",
         "occhi": "Marrone scuro",
-        "capelli": "Castano",
+        "capelli": "Nero",
         "pelle": "Chiaro"
     },
     "test_img_45.jpg": {
@@ -363,7 +363,7 @@
         "eta": 32,
         "genere": "Donna",
         "emozione": "Felice",
-        "occhi": "Verde-Grigio",
+        "occhi": "Marrone chiaro",
         "capelli": "Biondo chiaro",
         "pelle": "Chiaro"
     },

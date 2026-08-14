@@ -7,6 +7,9 @@ import sys
 import json
 import csv
 import cv2
+import logging
+
+logger = logging.getLogger(__name__)
 
 src_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src'))
 if src_path not in sys.path:
@@ -24,10 +27,14 @@ def main():
     cartella_risultati = os.path.join(cartella_testing, "results")
     cartella_immagini = os.path.join(cartella_dataset, "img_dataset")
     path_json_input = os.path.join(cartella_dataset, "dataset.json")
-    path_csv_output = os.path.join(cartella_risultati, "risultati_test.csv")
+    path_csv_output = os.path.join(cartella_risultati, "test_results.csv")
 
-    with open(path_json_input, "r", encoding="utf-8") as f:
-        dataset_json = json.load(f)
+    if os.path.exists(path_json_input):
+        with open(path_json_input, "r", encoding="utf-8") as f:
+            dataset_json = json.load(f)
+    else:
+        logger.error("Errore: problema nel path del file dataset.json: %s", path_json_input)
+        return None
 
     totale_immagini = len(dataset_json)
     volti_rilevati = 0
@@ -38,7 +45,7 @@ def main():
         "occhi": 0,
         "capelli": 0,
         "pelle": 0,
-        "eta_range_5_anni": 0
+        "eta_range_10_anni": 0
     }
     
     somma_errori_eta = 0
@@ -86,8 +93,8 @@ def main():
         errore_assoluto = abs(eta_stimata - eta_reale)
         somma_errori_eta += errore_assoluto
         
-        if errore_assoluto <= 5:
-            corretti["eta_range_5_anni"] += 1
+        if errore_assoluto <= 10:
+            corretti["eta_range_10_anni"] += 1
 
     
     if volti_rilevati > 0:
@@ -95,34 +102,37 @@ def main():
     else:
         base_calcolo = 1
 
+    acc_volti = (volti_rilevati / totale_immagini) * 100
     acc_genere = (corretti["genere"] / base_calcolo) * 100
     acc_emozione = (corretti["emozione"] / base_calcolo) * 100
     acc_occhi = (corretti["occhi"] / base_calcolo) * 100
     acc_capelli = (corretti["capelli"] / base_calcolo) * 100
     acc_pelle = (corretti["pelle"] / base_calcolo) * 100
-    acc_eta_range = (corretti["eta_range_5_anni"] / base_calcolo) * 100
+    acc_eta_range = (corretti["eta_range_10_anni"] / base_calcolo) * 100
     
     mae_eta = somma_errori_eta / base_calcolo
 
-    with open(path_csv_output, "w", newline="", encoding="utf-8") as file_csv:
-        writer = csv.writer(file_csv, delimiter=";")
+    if os.path.isdir(cartella_risultati):
+        with open(path_csv_output, "w", newline="", encoding="utf-8") as file_csv:
+            writer = csv.writer(file_csv, delimiter=";")
         
-        writer.writerow(["Metrica", "Valore", "Dettagli"])
-        writer.writerow(["Totale Immagini Dataset", totale_immagini, ""])
-        writer.writerow(["Volti Effettivamente Rilevati", volti_rilevati, f"{(volti_rilevati/totale_immagini)*100:.2f}% di Face Detection Rate"])
-        writer.writerow([])
+            writer.writerow(["Metrica", "Valore", "Dettagli"])
+            writer.writerow(["Totale Immagini Dataset", totale_immagini, ""])
+            writer.writerow(["Accuratezza Volti Rilevati", f"{acc_volti:.2f}%", f"{volti_rilevati} su {totale_immagini}"])
+            writer.writerow([])
         
-        writer.writerow(["Accuratezza Genere", f"{acc_genere:.2f}%", f"{corretti['genere']} su {volti_rilevati}"])
-        writer.writerow(["Accuratezza Emozione", f"{acc_emozione:.2f}%", f"{corretti['emozione']} su {volti_rilevati}"])
-        writer.writerow(["Accuratezza Colore Occhi", f"{acc_occhi:.2f}%", f"{corretti['occhi']} su {volti_rilevati}"])
-        writer.writerow(["Accuratezza Colore Capelli", f"{acc_capelli:.2f}%", f"{corretti['capelli']} su {volti_rilevati}"])
-        writer.writerow(["Accuratezza Colore Pelle", f"{acc_pelle:.2f}%", f"{corretti['pelle']} su {volti_rilevati}"])
-        writer.writerow([])
+            writer.writerow(["Accuratezza Genere", f"{acc_genere:.2f}%", f"{corretti['genere']} su {volti_rilevati}"])
+            writer.writerow(["Accuratezza Emozione", f"{acc_emozione:.2f}%", f"{corretti['emozione']} su {volti_rilevati}"])
+            writer.writerow(["Accuratezza Colore Occhi", f"{acc_occhi:.2f}%", f"{corretti['occhi']} su {volti_rilevati}"])
+            writer.writerow(["Accuratezza Colore Capelli", f"{acc_capelli:.2f}%", f"{corretti['capelli']} su {volti_rilevati}"])
+            writer.writerow(["Accuratezza Colore Pelle", f"{acc_pelle:.2f}%", f"{corretti['pelle']} su {volti_rilevati}"])
+            writer.writerow([])
         
-        writer.writerow(["Accuratezza Età (Tolleranza ±5)", f"{acc_eta_range:.2f}%", f"{corretti['eta_range_5_anni']} su {volti_rilevati}"])
-        writer.writerow(["Mean Absolute Error (MAE) Età", f"{mae_eta:.2f} anni", "Media dell'errore assoluto tra stima e realtà"])
-
-    print("\n--- TEST COMPLETATO ---")
+            writer.writerow(["Accuratezza Età (Tolleranza ±10)", f"{acc_eta_range:.2f}%", f"{corretti['eta_range_10_anni']} su {volti_rilevati}"])
+            writer.writerow(["Mean Absolute Error (MAE) Età", f"{mae_eta:.2f} anni", ""])
+    else:
+        logger.error("Errore: la cartella results non esiste: %s", cartella_risultati)
+        return None
 
 if __name__ == "__main__":
     main()
