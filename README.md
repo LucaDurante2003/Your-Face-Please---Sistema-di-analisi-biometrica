@@ -23,10 +23,6 @@ Di seguito vengono illustrate le tecnologie utilizzate:
 ## Struttura della repository
 ```
 ├── docs/                                  # Documentazione e paper di riferimento
-│   ├── AI, Surveillance, and the Fight for Freedom in Authoritarian Regimes.pdf
-│   ├── Engineering Privacy by Design - Are engineers ready to live up to the challenge.pdf
-│   ├── Gender Shades - Intersectional Accuracy Disparities in Commercial Gender Classification.pdf
-│   └── Technology-enabled surveillance as a regime characteristic reauthoritarianization in Central Asia.pdf
 ├── src/                                   # Codice sorgente dell'applicazione
 │   ├── engine/                            # Logica di analisi biometrica
 │   │   ├── __init__.py
@@ -47,14 +43,14 @@ Di seguito vengono illustrate le tecnologie utilizzate:
 │   │   │   └── start_window.qss
 │   │   ├── __init__.py
 │   │   ├── main_window.py                 # Finestra principale dell'applicazione
-│   │   └── start_window.py                # Finestra iniziale / splash screen
+│   │   └── start_window.py                # Finestra iniziale dell'applicazione
 │   ├── __init__.py
 │   └── main.py                            # Entry point dell'applicazione
 ├── testing_src/                           # Test e validazione
 │   ├── dataset/                           # Dataset per i test di accuratezza
 │   │   ├── img_dataset/                   # Immagini di test
 │   │   └── dataset.json                   # Ground truth del dataset
-│   ├── results/                           # Generata automaticamente dai test di accuratezza
+│   ├── results/                           # Generata automaticamente da accuracy_test.py
 │   ├── accuracy_test.py                   # Test di accuratezza dei modelli
 │   └── unit_tests.py                      # Test unitari (color_recognition)
 ├── .gitignore
