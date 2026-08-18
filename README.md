@@ -26,13 +26,13 @@ Da aggiungere
 ## Rispetto della Privacy by Design (GDPR Art. 25)
 
 L'applicazione rispetta la *Data Minimization*:
-- L'elaborazione avviene esclusivamente in Edge Computing (RAM locale)
+- L'elaborazione avviene esclusivamente in *Edge Computing* (RAM locale)
 - I buffer dei frame video inviati ai modelli IA vengono distrutti esplicitamente dal ciclo di memoria dopo l'estrazione del metadato
 - Nessuna immagine, log identificativo o stream video viene salvato su disco locale o inviato a server cloud
 
 ## Dipendenze
 
-Si consiglia di creare un ambiente virtuale (es: Conda) per eseguire un'installazione pulita in un ambiente isolato delle librerie necessarie affinché l'applicazione svolga la sua corretta funzione
+Si consiglia di creare un ambiente virtuale (es: Conda) per eseguire un'installazione pulita, in un ambiente isolato, delle librerie necessarie affinché l'applicazione svolga la sua corretta funzione
 ```
 conda create --name nome_env python=3.10.20 -y
 conda activate nome_env
@@ -53,4 +53,19 @@ cd src
 python main.py
 ```
 ## Come testare l'applicazione
-Da aggiungere
+
+Attivare l'ambiente Conda precedentemente creato ed inizializzato
+```
+conda activate nome_env
+```
+Partendo dalla cartella principale dell'applicazione, recarsi nella cartella *testing_src* ed eseguire il file *accuracy_test.py*
+```
+cd testing_src
+python accuracy_test.py
+```
+Una volta conclusa l'esecuzione dello script, è possibile visualizzare i risultati, sotto forma di file *csv*, recandosi nella cartella *results*
+
+Se invece si volessero eseguire i test unitari sulle funzioni del file *color_recognition.py*, allora, rimanendo nella cartella *testing_src*, bisogna eseguire il file *unit_tests.py*
+```
+python unit_tests.py
+```
