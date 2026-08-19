@@ -34,10 +34,7 @@ Di seguito vengono illustrate le tecnologie utilizzate:
 │   │   └── worker_thread.py               # Thread di elaborazione dei frame
 │   ├── ui/                                # Interfaccia grafica
 │   │   ├── fonts/                         # Font personalizzati
-│   │   │   └── agitprop.ttf
 │   │   ├── img/                           # Risorse grafiche
-│   │   │   ├── icon.png
-│   │   │   └── logo.png
 │   │   ├── styles/                        # Fogli di stile Qt (QSS)
 │   │   │   ├── main_window.qss
 │   │   │   └── start_window.qss
